@@ -1,11 +1,10 @@
 cmake_minimum_required(VERSION 3.15)
 project(FastOutReader)
 
-set(BOOST_HDR_PATH /usr/local/include/)
-set(BOOST_LIB_PATH /usr/local/lib/)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ggdb -O3 -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb -O3 -Wall")
 
-#FIXME: Fix Boost library dependencies 
-#find_package(Boost 1.70.0 COMPONENTS ${BOOST_LIB_PATH} ${BOOST_HDR_PATH})
+find_package(Boost 1.70.0 REQUIRED)
 
 file(GLOB LIBFST_SRC ${PROJECT_SOURCE_DIR}/fst/fstapi.c 
                      ${PROJECT_SOURCE_DIR}/fst/fastlz.c 
@@ -22,9 +21,9 @@ add_library(fst ${LIBFST_SRC} ${LIBFST_HDR})
 include_directories(${PROJECT_SOURCE_DIR})
 file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/*.cpp ${PROJECT_SOURCE_DIR}/*.c)
 add_executable(fastread ${SRC_FILES})
-target_include_directories(fastread PUBLIC ${PROJECT_SOURCE_DIR} ${BOOST_HDR_PATH} ${PROJECT_SOURCE_DIR}/fst)
+target_include_directories(fastread PUBLIC ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/fst)
 target_link_libraries(fastread fst z)
-#FIXME: Fix Boost library dependencies 
-#if(Boost_FOUND)
-#    target_link_libraries(fastread ${Boost_LIBRARIES})
-#endif()
+if(Boost_FOUND)
+    target_include_directories(fastread PUBLIC ${Boost_INCLUDE_DIRS})
+    target_link_libraries(fastread ${Boost_LIBRARIES})
+endif()
