@@ -1,0 +1,73 @@
+/*
+ * TimerTags.cpp
+ *
+ *  Created on: Jul 4, 2019
+ *      Author: oleh
+ */
+
+#include <TimeTags.h>
+#include <string>
+#include <iostream>
+
+#include <Utils.h>
+
+TimeTags::TimeTags()
+ : AxisX()
+ , samples(0)
+ , trig(0)
+ , integralData(nullptr) {
+}
+
+TimeTags::~TimeTags() {
+}
+
+/*
+//  Read time tag information from a file
+//  See 'Vertical Header->Abscissa Data Type->Time Tags' section of online
+//  help for HPLogic Fast Binary Data File Format under the File Out tool (8.3)
+*/
+TimeTags* TimeTags::read(std::ifstream& inFile, int pagedFlag) {
+
+	std::string line;
+	int haveData = 1 ;
+
+	std::cout << "+++  Time Tagged Data    " << pagedFlag << std::endl;
+
+	auto timeTags = new TimeTags();
+
+	std::getline(inFile, line);
+	/* number of samples and trigger position */
+	::sscanf(line.data(), "%d %d\n", &timeTags->samples, &timeTags->trig ) ;
+
+	std::cout << "+++    samples = " << timeTags->samples << "   trigger = " << timeTags->trig << std::endl;
+
+	if ( pagedFlag ) {
+		std::getline(inFile, line);
+		std::cout << "+++  TimeTags::read " << line << std::endl;
+		haveData = ::atoi(line.data());
+	}
+
+	if ( haveData ) {
+		timeTags->integralData =  IntegralData::read(inFile, 1);
+		std::getline(inFile, line);
+		std::getline(inFile, line);
+	}
+
+	Utils::readAttributes(inFile, "TimeTags" );
+
+	return timeTags;
+}
+
+int64_t TimeTags::getTime(int aRecIdx) {
+	int64_t tim = 0;
+
+	std::vector<uint8_t> byteVec;
+	integralData->extractBytes(aRecIdx, byteVec);
+
+	if(byteVec.size() == sizeof(tim))
+		tim = bswap64(*reinterpret_cast<int64_t*>(byteVec.data()));
+
+	return tim;
+}
+
+
