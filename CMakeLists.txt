@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.15)
 project(FastOutReader)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ggdb -O3 -Wall")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb -O3 -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11  -ggdb -O3 -Wall")
 
-find_package(Boost 1.70.0 REQUIRED)
+find_package(Boost 1.53.0 REQUIRED)
 
 file(GLOB LIBFST_SRC ${PROJECT_SOURCE_DIR}/fst/fstapi.c 
                      ${PROJECT_SOURCE_DIR}/fst/fastlz.c 
