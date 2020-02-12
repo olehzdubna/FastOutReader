@@ -629,7 +629,7 @@ void outputIntegralData( long id )
         }
       }
     } else {
-      printf( "Integral Data output of %d bytes/sample not implemented!\n" ) ;
+      printf( "Integral Data output of %d bytes/sample not implemented!\n", bytesPerSample ) ;
     }
 
     printf("\n\n");
@@ -736,10 +736,10 @@ long readIntegralArray( FILE *fp, int infoLevel, int numbits, int sign,
     }
 
     /* integral data id */
-    fscanf( fp, "%d\n", &id ) ;
+    fscanf( fp, "%ld\n", &id ) ;
 
     if ( infoLevel > 4 )
-        printf( "      Integral ID: %d", id ) ;
+        printf( "      Integral ID: %ld", id ) ;
 
     if ( inSharedObjects( id ) ) {
         if ( infoLevel > 4 )
@@ -822,10 +822,10 @@ long readPagedIntegralData( FILE *fp, int infoLevel, int numbits, int sign )
     }
 
     /* integral data id */
-    fscanf( fp, "%d\n", &id ) ;
+    fscanf( fp, "%ld\n", &id ) ;
 
     if ( infoLevel > 4 )
-        printf( "      Integral ID: %d\n", id ) ;
+        printf( "      Integral ID: %ld\n", id ) ;
 
     /* id == 0 means that there is no data - reason unknown!!! */
     if ( id == 0 ) {
@@ -851,7 +851,7 @@ long readPagedIntegralData( FILE *fp, int infoLevel, int numbits, int sign )
           /* full name did not work, try just base name */
           char *basename = strrchr( filename, '/' ) ;
           if (( !basename ) || (( dataFP = fopen( basename+1, "r" )) == NULL )) {
-              printf( "   Can't open file `%s`.\n" ) ;
+              printf( "   Can't open file `%s`.\n", (basename + 1) ) ;
               return id ;
           }
         }
@@ -927,10 +927,10 @@ long readBitPackedData( FILE *fp, int infoLevel )
         printf( "      BitPackedData:\n" ) ;
 
     /* integral data id */
-    fscanf( fp, "%d\n", &id ) ;
+    fscanf( fp, "%ld\n", &id ) ;
 
     if ( infoLevel > 4 )
-        printf( "      Integral ID: %d\n", id ) ;
+        printf( "      Integral ID: %ld\n", id ) ;
 
     if ( inSharedObjects( id ) ) {
         if ( infoLevel > 4 )
@@ -1130,10 +1130,10 @@ long readBitBlock( FILE *fp, int infoLevel )
     fscanf( fp, "%d\n%d\n", &tmp, &tmp ) ;
 
     /* BitBlock id */
-    fscanf( fp, "%d\n", &id ) ;
+    fscanf( fp, "%ld\n", &id ) ;
 
     if ( infoLevel > 4 )
-        printf( "      BitBlock ID: %d", id ) ;
+        printf( "      BitBlock ID: %ld", id ) ;
 
     /* id == 0 means that there is no data - reason unknown!!! */
     if ( id == 0 ) {
@@ -1162,7 +1162,7 @@ long readBitBlock( FILE *fp, int infoLevel )
           /* full name did not work, try just base name */
           char *basename = strrchr( filename, '/' ) ;
           if (( !basename ) || (( dataFP = fopen( basename+1, "r" )) == NULL )) {
-              printf( "   Can't open file `%s`.\n" ) ;
+              printf( "   Can't open file `%s`.\n", (basename + 1) ) ;
               return id ;
           }
         }
@@ -1213,10 +1213,10 @@ void readBitBlockData( FILE *fp, int infoLevel )
         printf( "      BitBlockData:\n" ) ;
 
     /* integral data id */
-    fscanf( fp, "%d\n", &id ) ;
+    fscanf( fp, "%ld\n", &id ) ;
 
     if ( infoLevel > 4 )
-        printf( "      Integral ID: %d  ", id ) ;
+        printf( "      Integral ID: %ld  ", id ) ;
 
     if ( inSharedObjects( id ) ) {
         if ( infoLevel > 4 )
@@ -1264,10 +1264,10 @@ void readStringData( FILE *fp, int infoLevel )
         printf( "      StringData:\n" ) ;
 
     /* integral data id */
-    fscanf( fp, "%d\n", &id ) ;
+    fscanf( fp, "%ld\n", &id ) ;
 
     if ( infoLevel > 4 )
-        printf( "      Integral ID: %d\n", id ) ;
+        printf( "      Integral ID: %ld\n", id ) ;
 
     if ( inSharedObjects( id ) ) {
         if ( infoLevel > 4 )
@@ -1529,7 +1529,7 @@ void readTimeTags( FILE * fp, int infoLevel, int pagedFlag )
 
     fgetpos( fp, &pos ) ;
     if ( infoLevel > 1 )
-        printf( "  Time Tagged Data    (pos=%d)\n", pos ) ;
+        printf( "  Time Tagged Data    (pos=%ld)\n", pos ) ;
 
     /* number of samples and trigger position */
     fscanf( fp, "%d %d\n", &samples, &trig ) ;
@@ -1592,10 +1592,10 @@ void readLabelEntry( FILE *fp, int infoLevel, int Fmajor, int Fminor )
     fpos_t pos ;
 
     fgetpos( fp, &pos ) ;
-    fscanf( fp, "%d\n", &labelId ) ;
+    fscanf( fp, "%ld\n", &labelId ) ;
 
     if ( infoLevel > 4 )
-        printf( "  Label ID: %d    (pos=%d)\n", labelId, pos ) ;
+        printf( "  Label ID: %ld    (pos=%ld)\n", labelId, pos ) ;
 
     if ( inSharedObjects( labelId ) ) {
         if ( infoLevel > 4 )
@@ -1638,7 +1638,7 @@ void readDataSet( FILE *fp, int infoLevel, int Fmajor, int Fminor )
         fgetpos( fp, &pos ) ;
     fscanf( fp, "%d\n", &numLabelEntries ) ;
     if ( infoLevel > 1 )
-        printf( "  Number of LabelEntries: %d     (pos=%d)\n", 
+        printf( "  Number of LabelEntries: %d     (pos=%ld)\n", 
                                                     numLabelEntries, pos ) ;
     for( i = 0 ; i < numLabelEntries ; i++ ) {
         printf( "  Label %3d  -- ", i+1 ) ;
