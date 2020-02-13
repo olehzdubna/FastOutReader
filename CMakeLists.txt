@@ -16,13 +16,9 @@ file(GLOB LIBFST_HDR ${PROJECT_SOURCE_DIR}/fst/fstapi.h
 		     ${PROJECT_SOURCE_DIR}/fst/lz4.h)
 add_library(fst ${LIBFST_SRC} ${LIBFST_HDR})
 
-#FIXME: Add example program main
-#add_executable(fst.exe ${LIBFST_SRC})
-#target_link_libraries(fst.exe PUBLIC fst z)
-
 include_directories(${PROJECT_SOURCE_DIR})
-file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/*.cpp ${PROJECT_SOURCE_DIR}/*.c)
-add_executable(fastread ${SRC_FILES})
+file(GLOB FASTREAD_SRC ${PROJECT_SOURCE_DIR}/*.cpp)
+add_executable(fastread ${FASTREAD_SRC})
 target_include_directories(fastread PUBLIC ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/fst)
 target_link_libraries(fastread fst z)
 if(Boost_FOUND)
