@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ggdb -O3 -Wall")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb -O3 -Wall")
 
-find_package(Boost 1.70.0 REQUIRED)
+find_package(Boost 1.53.0 REQUIRED)
 
 file(GLOB LIBFST_SRC ${PROJECT_SOURCE_DIR}/fst/fstapi.c 
                      ${PROJECT_SOURCE_DIR}/fst/fastlz.c 
@@ -15,10 +15,6 @@ file(GLOB LIBFST_HDR ${PROJECT_SOURCE_DIR}/fst/fstapi.h
                      ${PROJECT_SOURCE_DIR}/fst/fastlz.h
 		     ${PROJECT_SOURCE_DIR}/fst/lz4.h)
 add_library(fst ${LIBFST_SRC} ${LIBFST_HDR})
-
-file(GLOB FAST_READER_SRC ${PROJECT_SOURCE_DIR}/*.c)
-add_executable(fast_reader ${LIBFST_SRC} ${FAST_READER_SRC})
-target_link_libraries(fast_reader PUBLIC fst z)
 
 include_directories(${PROJECT_SOURCE_DIR})
 file(GLOB FASTREAD_SRC ${PROJECT_SOURCE_DIR}/*.cpp)
