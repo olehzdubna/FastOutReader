@@ -1798,8 +1798,6 @@ char* strArg( int argc, char **argv, int *curArg )
 
 #endif
 
-//FIXME: Duplicate main
-#if 0
 main( int argc, char **argv )
 {
 /*
@@ -1933,4 +1931,3 @@ main( int argc, char **argv )
     /* cleanup */
     cleanupSharedObjects() ;
 }
-#endif 
