@@ -10,6 +10,8 @@
 #include <fstream>
 #include <string>
 
+#include <boost/program_options.hpp>
+
 #include <fstapi.h>
 
 #include <DataGroup.h>
@@ -18,15 +20,32 @@
 
 int main(int argc, char** argv) {
 
-	if(argc < 3) {
-		std::cout << "Usage: fastread <In filename> <Out filename>" << std::endl;
-		return -1;
+        std::string inFileName, outFileName;
+        boost::program_options::options_description od("Usage: fastread");
+	try 
+	{
+           od.add_options()
+	   ("help,h", "Show usage")
+	   ("input,i", boost::program_options::value(&inFileName),"In filename")
+	   ("output,o", boost::program_options::value(&outFileName), "Out filename");
+	   
+	   boost::program_options::variables_map vm;
+           boost::program_options::store(boost::program_options::parse_command_line(argc, argv, od), vm);
+           if(vm.empty() || vm.count("help"))
+	   {
+               std::cout << od << std::endl;
+	       return 0;
+	   }
+        }
+	catch(const std::exception& e)
+	{
+	   std::cerr << "Failed to parse command-line arguments, reason: " << e.what() << std::endl;
+           return -3;
 	}
 
-	std::string inFileName(argv[1]);
 	std::ifstream inFile;
 	inFile.open(inFileName);
-	if(!inFile.is_open()) {
+	if(!inFile.is_open() || inFile.fail()) {
 		std::cerr << "Cannot open input file " << inFileName << std::endl;
 		return -2;
 	}
@@ -51,7 +70,7 @@ int main(int argc, char** argv) {
 	auto dataSet = dataGroup->getDataSets().front();
 	std::cout << "+++  start time: " << dataSet->getTime(dataSet->getStartSample()) << ", trig time: " << dataSet->getTime(dataSet->getTrig()) << std::endl;
 
-	auto ctx = ::fstWriterCreate(argv[2], 1);
+	auto ctx = ::fstWriterCreate(outFileName.c_str(), 1);
 	fstWriterSetPackType(ctx, FST_WR_PT_LZ4);
 	fstWriterSetRepackOnClose(ctx, 0);
 	fstWriterSetParallelMode(ctx, 0);

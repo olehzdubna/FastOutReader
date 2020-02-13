@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ggdb -O3 -Wall")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb -O3 -Wall")
 
-find_package(Boost 1.53.0 REQUIRED)
+find_package(Boost 1.53.0 REQUIRED COMPONENTS program_options)
 
 file(GLOB LIBFST_SRC ${PROJECT_SOURCE_DIR}/fst/fstapi.c 
                      ${PROJECT_SOURCE_DIR}/fst/fastlz.c 
