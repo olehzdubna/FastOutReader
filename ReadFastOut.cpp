@@ -10,23 +10,53 @@
 #include <fstream>
 #include <string>
 
+#include <boost/program_options.hpp>
+
 #include <fstapi.h>
 
 #include <DataGroup.h>
 #include <DataSet.h>
 #include <Label.h>
 
+#include "terminal.hpp"
+#include "style.hpp"
+#include "image.hpp"
+#include "reflow.hpp"
+#include "components/text.hpp"
+#include "components/stacklayout.hpp"
+#include "components/flowlayout.hpp"
+#include "components/progress.hpp"
+#include "components/maxwidth.hpp"
+
+
 int main(int argc, char** argv) {
 
-	if(argc < 3) {
-		std::cout << "Usage: fastread <In filename> <Out filename>" << std::endl;
-		return -1;
+        std::string inFileName, outFileName;
+        boost::program_options::options_description od("Usage: fastread");
+	try 
+	{
+           od.add_options()
+	   ("help,h", "Show usage")
+	   ("input,i", boost::program_options::value(&inFileName),"In filename")
+	   ("output,o", boost::program_options::value(&outFileName), "Out filename");
+	   
+	   boost::program_options::variables_map vm;
+           boost::program_options::store(boost::program_options::parse_command_line(argc, argv, od), vm);
+           if(vm.empty() || vm.count("help"))
+	   {
+               std::cout << od << std::endl;
+	       return 0;
+	   }
+        }
+	catch(const std::exception& e)
+	{
+	   std::cerr << "Failed to parse command-line arguments, reason: " << e.what() << std::endl;
+           return -3;
 	}
 
-	std::string inFileName(argv[1]);
 	std::ifstream inFile;
 	inFile.open(inFileName);
-	if(!inFile.is_open()) {
+	if(!inFile.is_open() || inFile.fail()) {
 		std::cerr << "Cannot open input file " << inFileName << std::endl;
 		return -2;
 	}
@@ -51,7 +81,7 @@ int main(int argc, char** argv) {
 	auto dataSet = dataGroup->getDataSets().front();
 	std::cout << "+++  start time: " << dataSet->getTime(dataSet->getStartSample()) << ", trig time: " << dataSet->getTime(dataSet->getTrig()) << std::endl;
 
-	auto ctx = ::fstWriterCreate(argv[2], 1);
+	auto ctx = ::fstWriterCreate(outFileName.c_str(), 1);
 	fstWriterSetPackType(ctx, FST_WR_PT_LZ4);
 	fstWriterSetRepackOnClose(ctx, 0);
 	fstWriterSetParallelMode(ctx, 0);
@@ -91,9 +121,30 @@ int main(int argc, char** argv) {
 
 	fstWriterSetUpscope(ctx);
 
-//	for(int timIdx = dataSet->getStartSample(); timIdx < 100; timIdx++)
-	for(int timIdx = dataSet->getStartSample(); timIdx < dataSet->getLastSample(); timIdx++)
+        const auto& renderToTerm = [](auto const& vt, unsigned const w, rxterm::Component const& c) {
+            return vt.flip(c.render(w).toString());
+        };
+  
+        const auto& superProgressBar = [](auto x, auto y, auto z) -> rxterm::FlowLayout<> 
 	{
+            return {
+                  rxterm::Text("Reading samples..."),
+                  rxterm::FlowLayout<>{
+                  rxterm::MaxWidth(20, rxterm::Progress(x)),
+                  rxterm::MaxWidth(20, rxterm::Progress(y)),
+                  rxterm::MaxWidth(20, rxterm::Progress(z))
+                }
+            };
+        };
+
+        rxterm::VirtualTerminal vt;
+
+        int progressIdx = 0;
+	int timIdx = dataSet->getStartSample();
+//	for(int timIdx = dataSet->getStartSample(); timIdx < 100; timIdx++)
+	for(; progressIdx < dataSet->getLastSample() && timIdx < dataSet->getLastSample();)
+	{
+	        vt = renderToTerm(vt, 80, superProgressBar(0.01 * progressIdx, 0.02 * progressIdx, 0.03 * progressIdx));
 //		std::cout << "time " << dataSet->getTime(timIdx) - startTime << std::endl;
 		fstWriterEmitTimeChange(ctx, dataSet->getTime(timIdx) - startTime);
 
@@ -112,6 +163,8 @@ int main(int argc, char** argv) {
 //				std::cout << std::endl;
 			}
 		}
+		++progressIdx;
+		++timIdx;
 	}
 
 	::fstWriterClose(ctx);
