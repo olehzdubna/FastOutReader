@@ -9,6 +9,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <thread>
+#include <chrono>
 
 #include <boost/program_options.hpp>
 
@@ -28,6 +30,7 @@
 #include "components/progress.hpp"
 #include "components/maxwidth.hpp"
 
+using namespace std::chrono_literals;
 
 int main(int argc, char** argv) {
 
@@ -121,32 +124,52 @@ int main(int argc, char** argv) {
 	}
 
 	fstWriterSetUpscope(ctx);
-
-        const auto& renderToTerm = [](auto const& vt, unsigned const w, rxterm::Component const& c) {
-            return vt.flip(c.render(w).toString());
-        };
-  
-        const auto& superProgressBar = [](auto x, auto y, auto z) -> rxterm::FlowLayout<> 
+        
+	std::atomic_int sampleCount(dataSet->getLastSample());
+	double progressNormalizationExponent = std::floor(std::log10(sampleCount.load()));
+	std::atomic_ullong progressNormalizationFactor(std::pow(10,progressNormalizationExponent));
+        std::atomic_int progressIdx(0);
+	std::thread progressThread([&progressIdx, &sampleCount, &progressNormalizationFactor]()
 	{
-            return {
-                  rxterm::Text("Reading samples..."),
-                  rxterm::FlowLayout<>{
-                  rxterm::MaxWidth(20, rxterm::Progress(x)),
-                  rxterm::MaxWidth(20, rxterm::Progress(y)),
-                  rxterm::MaxWidth(20, rxterm::Progress(z))
-                }
-            };
-        };
+            const auto& renderToTerm = [](auto const& vt, unsigned const w, rxterm::Component const& c) {
+                return vt.flip(c.render(w).toString());
+             };
+              
+	     //TODO: Need to get actual terminal width, for now hard-coding to 80 
+	     const std::size_t terminalWidth = 80;
+	     //TODO: Possibly need to make delay configurable
+             const auto updateDelay = 200ms;
 
-        rxterm::VirtualTerminal vt;
+             // construct 3-segment progress bar
+             const auto& progressBar = [](auto x, auto y, auto z) -> rxterm::FlowLayout<> 
+	     {
+                 return {
+                            rxterm::Text("Reading samples..."),
+                            rxterm::FlowLayout<>{
+                            rxterm::MaxWidth(20, rxterm::Progress(x)),
+                            rxterm::MaxWidth(20, rxterm::Progress(y)),
+                            rxterm::MaxWidth(20, rxterm::Progress(z))
+                        }
+                 };
+             };
 
-        int progressIdx = 0;
+             const double normFactor = static_cast<double>(progressNormalizationFactor.load()); 
+             rxterm::VirtualTerminal vt;
+	     while(progressIdx.load() < sampleCount.load())
+	     {
+	        vt = renderToTerm(vt, terminalWidth, progressBar(
+		                                                 (1 / normFactor) * progressIdx, 
+		                                                 (2 / normFactor) * progressIdx, 
+							         (3 / normFactor) * progressIdx));
+		std::this_thread::sleep_for(updateDelay);
+	     }
+	});
+
 	int timIdx = dataSet->getStartSample();
 //	for(int timIdx = dataSet->getStartSample(); timIdx < 100; timIdx++)
-	for(; progressIdx < dataSet->getLastSample() && timIdx < dataSet->getLastSample();)
+	for(;progressIdx.load() < sampleCount.load() && timIdx < sampleCount.load();)
 	{
-	        vt = renderToTerm(vt, 80, superProgressBar(0.01 * progressIdx, 0.02 * progressIdx, 0.03 * progressIdx));
-//		std::cout << "time " << dataSet->getTime(timIdx) - startTime << std::endl;
+	//	std::cout << "time " << dataSet->getTime(timIdx) - startTime << std::endl;
 		fstWriterEmitTimeChange(ctx, dataSet->getTime(timIdx) - startTime);
 
 		for(auto& var: vars) {
@@ -164,9 +187,11 @@ int main(int argc, char** argv) {
 //				std::cout << std::endl;
 			}
 		}
-		++progressIdx;
+		progressIdx.store(progressIdx.load()+1);
 		++timIdx;
 	}
+
+        progressThread.join();
 
 	::fstWriterClose(ctx);
 

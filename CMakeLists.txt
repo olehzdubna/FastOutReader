@@ -36,7 +36,7 @@ target_include_directories(fastread PUBLIC
 			  ${PROJECT_SOURCE_DIR}/fst
 			  ${PROJECT_SOURCE_DIR}/rxterm-headers
 )
-target_link_libraries(fastread fst z)
+target_link_libraries(fastread fst z pthread)
 if(Boost_FOUND)
     target_include_directories(fastread PUBLIC ${Boost_INCLUDE_DIRS})
     target_link_libraries(fastread ${Boost_LIBRARIES})
