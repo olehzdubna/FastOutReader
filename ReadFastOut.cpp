@@ -33,15 +33,16 @@ int main(int argc, char** argv) {
 
         std::string inFileName, outFileName;
         boost::program_options::options_description od("Usage: fastread");
+	boost::program_options::variables_map vm;
 	try 
 	{
            od.add_options()
 	   ("help,h", "Show usage")
-	   ("input,i", boost::program_options::value(&inFileName),"In filename")
+	   ("input,i", boost::program_options::value<std::string>(&inFileName)->required(), "In filename")
 	   ("output,o", boost::program_options::value(&outFileName), "Out filename");
-	   
-	   boost::program_options::variables_map vm;
+
            boost::program_options::store(boost::program_options::parse_command_line(argc, argv, od), vm);
+	   boost::program_options::notify(vm);
            if(vm.empty() || vm.count("help"))
 	   {
                std::cout << od << std::endl;
