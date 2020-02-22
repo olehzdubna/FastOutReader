@@ -18,6 +18,17 @@
 #include <DataSet.h>
 #include <Label.h>
 
+#include "terminal.hpp"
+#include "style.hpp"
+#include "image.hpp"
+#include "reflow.hpp"
+#include "components/text.hpp"
+#include "components/stacklayout.hpp"
+#include "components/flowlayout.hpp"
+#include "components/progress.hpp"
+#include "components/maxwidth.hpp"
+
+
 int main(int argc, char** argv) {
 
         std::string inFileName, outFileName;
@@ -110,9 +121,30 @@ int main(int argc, char** argv) {
 
 	fstWriterSetUpscope(ctx);
 
-//	for(int timIdx = dataSet->getStartSample(); timIdx < 100; timIdx++)
-	for(int timIdx = dataSet->getStartSample(); timIdx < dataSet->getLastSample(); timIdx++)
+        const auto& renderToTerm = [](auto const& vt, unsigned const w, rxterm::Component const& c) {
+            return vt.flip(c.render(w).toString());
+        };
+  
+        const auto& superProgressBar = [](auto x, auto y, auto z) -> rxterm::FlowLayout<> 
 	{
+            return {
+                  rxterm::Text("Reading samples..."),
+                  rxterm::FlowLayout<>{
+                  rxterm::MaxWidth(20, rxterm::Progress(x)),
+                  rxterm::MaxWidth(20, rxterm::Progress(y)),
+                  rxterm::MaxWidth(20, rxterm::Progress(z))
+                }
+            };
+        };
+
+        rxterm::VirtualTerminal vt;
+
+        int progressIdx = 0;
+	int timIdx = dataSet->getStartSample();
+//	for(int timIdx = dataSet->getStartSample(); timIdx < 100; timIdx++)
+	for(; progressIdx < dataSet->getLastSample() && timIdx < dataSet->getLastSample();)
+	{
+	        vt = renderToTerm(vt, 80, superProgressBar(0.01 * progressIdx, 0.02 * progressIdx, 0.03 * progressIdx));
 //		std::cout << "time " << dataSet->getTime(timIdx) - startTime << std::endl;
 		fstWriterEmitTimeChange(ctx, dataSet->getTime(timIdx) - startTime);
 
@@ -131,6 +163,8 @@ int main(int argc, char** argv) {
 //				std::cout << std::endl;
 			}
 		}
+		++progressIdx;
+		++timIdx;
 	}
 
 	::fstWriterClose(ctx);
