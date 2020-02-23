@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
            od.add_options()
 	   ("help,h", "Show usage")
 	   ("input,i", boost::program_options::value<std::string>(&inFileName)->required(), "In filename")
-	   ("output,o", boost::program_options::value(&outFileName), "Out filename");
+	   ("output,o", boost::program_options::value<std::string>(&outFileName)->required(), "Out filename");
 
            boost::program_options::store(boost::program_options::parse_command_line(argc, argv, od), vm);
 	   boost::program_options::notify(vm);
