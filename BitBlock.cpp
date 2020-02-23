@@ -57,7 +57,7 @@ BitBlock* BitBlock::read(std::ifstream& inFile) {
 	/* BitBlock id */
 	id = ::atol(line.data());
 
-	std::cout << "+++      BitBlock ID: " << id;
+	//TODO: for debug std::cout << "+++      BitBlock ID: " << id;
 
 	/* id == 0 means that there is no data - reason unknown!!! */
 	if ( id == 0 ) {
@@ -67,19 +67,19 @@ BitBlock* BitBlock::read(std::ifstream& inFile) {
 
 	BitBlock* bitBlock = nullptr;
 	if ((bitBlock = static_cast<BitBlock*>(DataGroup::instance()->isObject(id))) ) {
-		std::cout << "    already seen this LabelEntry object" << std::endl;
+		//TODO: for debug  std::cout << "    already seen this LabelEntry object" << std::endl;
 		return bitBlock;
 	}
 	std::cout << std::endl;
 
 	/* is this data in this file or in separate file? */
 	std::getline(inFile, line);
-	std::cout << "+++  Label::readBitBlock " << line << std::endl;
+	//TODO: for debug std::cout << "+++  Label::readBitBlock " << line << std::endl;
 
 	::sscanf(line.data(), "%d `%[^`]`", &useFile, filename ) ;
 
 	if ( useFile ) {
-		std::cout << "+++      Data is in file " <<  filename << "." << std::endl;
+		//TODO: for debug std::cout << "+++      Data is in file " <<  filename << "." << std::endl;
 		dataFile.open(filename);
 		if(!dataFile.is_open()) {
 		  /* full name did not work, try just base name */
@@ -107,7 +107,7 @@ BitBlock* BitBlock::read(std::ifstream& inFile) {
 	std::getline(dataFile, line);
 	::sscanf(line.data(), "%d %d\n", &bitBlock->numSamples, &bitBlock->numBytesPerSample ) ;
 
-	std::cout << "+++        Number samples: " << bitBlock->numSamples << "  Bytes Per Sample: " << bitBlock->numBytesPerSample << std::endl;
+	//TODO: for debug std::cout << "+++        Number samples: " << bitBlock->numSamples << "  Bytes Per Sample: " << bitBlock->numBytesPerSample << std::endl;
 
 	/* raw bytes */
 	bitBlock->buffer = new char[bitBlock->numSamples * bitBlock->numBytesPerSample];

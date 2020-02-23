@@ -30,19 +30,22 @@ BitPackedData* BitPackedData::read(std::ifstream& inFile) {
 	long id = 0;
 	char *buffer ;
 	int numSamples, bytesPerSample ;
+        (void)buffer;
+        (void)numSamples;
+	(void)bytesPerSample;
 
-	std::cout << "+++      BitPackedData:" << std::endl;
+	//TODO: for debug std::cout << "+++      BitPackedData:" << std::endl;
 
 	std::getline(inFile, line);
 
 	/* integral data id */
 	id = ::atol(line.data());
 
-	std::cout << "+++      Integral ID: " << id << std::endl;
+	//TODO: for debug std::cout << "+++      Integral ID: " << id << std::endl;
 
 	BitPackedData* bitPackedData = nullptr;
 	if ((bitPackedData = static_cast<BitPackedData*>(DataGroup::instance()->isObject(id)))) {
-		std::cout << "+++    already seen this LabelEntry object" << std::endl;
+		//TODO: for debug std::cout << "+++    already seen this LabelEntry object" << std::endl;
 		return bitPackedData;
 	}
 
@@ -50,7 +53,7 @@ BitPackedData* BitPackedData::read(std::ifstream& inFile) {
 	std::getline(inFile, line);
 	::sscanf(line.data(), "%d %d %d\n", &bitPackedData->start, &bitPackedData->width, &bitPackedData->inverted ) ;
 
-	std::cout << "+++      start=" << bitPackedData->start << "   width=" << bitPackedData->width << "    inverted=" << bitPackedData->inverted << std::endl;;
+	//TODO: for debug std::cout << "+++      start=" << bitPackedData->start << "   width=" << bitPackedData->width << "    inverted=" << bitPackedData->inverted << std::endl;;
 
 	/* stuckone and stuckzero */
 	std::getline(inFile, line);
@@ -59,7 +62,7 @@ BitPackedData* BitPackedData::read(std::ifstream& inFile) {
 	std::getline(inFile, line);
 	/* datablock */
 	::sscanf(line.data(), "%d %d\n", &bitPackedData->bytesPerLine, &bitPackedData->integralTypesPerLine ) ;
-	std::cout << "+++      bytesPerLine=" << bitPackedData->bytesPerLine << "   integralTypesPerLine=" << bitPackedData->integralTypesPerLine << std::endl;
+	//TODO: for debug std::cout << "+++      bytesPerLine=" << bitPackedData->bytesPerLine << "   integralTypesPerLine=" << bitPackedData->integralTypesPerLine << std::endl;
 
 //	    GlobalSuppressDataOutput = 1 ;
 	bitPackedData->integralData2 = IntegralData::read(inFile, bitPackedData->integralTypesPerLine) ;

@@ -41,14 +41,14 @@ bool DataSet::process() {
 
 	std::getline(inFile, line);
 	numLabelEntries = ::atoi(line.data());
-    std::cout << "+++  Number of LabelEntries: " << numLabelEntries << std::endl;
+    //TODO: for debug std::cout << "+++  Number of LabelEntries: " << numLabelEntries << std::endl;
 
     if (numLabelEntries > 100)
     	numLabelEntries = 100;
 
     for(int i = 0 ; i < numLabelEntries ; i++) {
 
-    	std::cout << "+++  Label -- " << i+1 << std::endl;
+    	//TODO: for debug std::cout << "+++  Label -- " << i+1 << std::endl;
 
     	if(!readLabel())
     		return false;
@@ -67,21 +67,21 @@ bool DataSet::process() {
     /* origin path */
 	char tmpstr[100];
     ::sscanf(line.data(), "`%[^`]`\n", tmpstr ) ;
-    std::cout << "+++  Origin: " << tmpstr << std::endl;
+    //TODO: for debug std::cout << "+++  Origin: " << tmpstr << std::endl;
 
 	std::getline(inFile, line);
     /* dataset id, etc... */
     ::sscanf(line.data(), "%d %d\n", &id1, &id3);
-    std::cout << "+++  DataSet ID: " << id1 << std::endl;
-    std::cout << "+++  Run ID    : " << id3 << std::endl;
+    //TODO: for debug std::cout << "+++  DataSet ID: " << id1 << std::endl;
+    //TODO: for debug std::cout << "+++  Run ID    : " << id3 << std::endl;
 
     /* Begin and End time */
 	std::getline(inFile, line);
     ::sscanf(line.data(), "%d\n", &beginTime);
 	std::getline(inFile, line);
     ::sscanf(line.data(), "%d\n", &endTime);
-    std::cout << "+++  Begin Time: " << beginTime << std::endl;
-    std::cout << "+++  End   Time: " << endTime << std::endl;
+    //TODO: for debug std::cout << "+++  Begin Time: " << beginTime << std::endl;
+    //TODO: for debug std::cout << "+++  End   Time: " << endTime << std::endl;
 
     /* start sample */
 	std::getline(inFile, line);
@@ -90,8 +90,8 @@ bool DataSet::process() {
 	std::getline(inFile, line);
     lastSample = atoi(line.data());
 
-    std::cout << "+++  Start sample: " << startSample << std::endl;
-    std::cout << "+++   Last sample: " << lastSample << std::endl;
+    //TODO: for debug std::cout << "+++  Start sample: " << startSample << std::endl;
+    //TODO: for debug std::cout << "+++   Last sample: " << lastSample << std::endl;
 
     return true;
 }
@@ -126,7 +126,7 @@ bool DataSet::readTimeCorrelationInfo() {
 	std::getline(inFile, line);
 	char strLine[100];
 	::sscanf(line.data(), "%d %d %s\n", &type, &source, strLine);
-	std::cout << "+++  Time Correlation type: " << type << "  source: " << source << "  Offset: " << strLine <<std::endl;
+	//TODO: for debug std::cout << "+++  Time Correlation type: " << type << "  source: " << source << "  Offset: " << strLine <<std::endl;
 
 	return true;
 }
@@ -147,7 +147,7 @@ bool DataSet::readStateCorrelationInfo() {
 
 	/* state correlation offset */
 	std::getline(inFile, line);
-	std::cout << "+++  State Correlation Offset: " << line << std::endl;
+	//TODO: for debug std::cout << "+++  State Correlation Offset: " << line << std::endl;
 
 	return true;
 }

@@ -25,6 +25,7 @@ Reorderer* Reorderer::read(std::ifstream& inFile) {
 	std::string line;
     int endian16, endian32, endian64, endian128, width ;
     char buffer[256] ;
+    (void)buffer;
     /* longest input2outputMapL = malloc( width * sizeof( longest )) ; */
     /* longest output2inputMapL = malloc( width * sizeof( longest )) ; */
     /* longest is a type that deals with numbers greater than 32 bits  */
@@ -35,7 +36,7 @@ Reorderer* Reorderer::read(std::ifstream& inFile) {
     ::sscanf(line.data(), "Endian16: %d Endian32: %d Endian64: %d Endian128: %d Width: %d\n",
                        &endian16, &endian32, &endian64, &endian128, &width) ;
 
-    std::cout << "+++      Bit reordering: Endian16:" << endian16 << "  32:" << endian32 << "  64:" << endian64 << "  128:" << endian128 << std::endl;
+    //TODO: for debug std::cout << "+++      Bit reordering: Endian16:" << endian16 << "  32:" << endian32 << "  64:" << endian64 << "  128:" << endian128 << std::endl;
 
     reorderer->endian16 = endian16 ;
     reorderer->endian32 = endian32 ;
@@ -55,16 +56,16 @@ Reorderer* Reorderer::read(std::ifstream& inFile) {
     	reorderer->input2outputMap32 = (int*)malloc( width * sizeof( int ) ) ;
     	reorderer->output2inputMap32 =  (int*)malloc( width * sizeof( int ) ) ;
 
-      std::cout << "+++        Custom Reordering:" << std::endl;
+      //TODO: for debug std::cout << "+++        Custom Reordering:" << std::endl;
 
       for (int i = 0 ; i < width ; i++ ) {
    		std::getline(inFile, line);
         ::sscanf(line.data(), "%d %d\n", &(reorderer->input2outputMap32[i]),
                                                 &(reorderer->output2inputMap32[i]) ) ;
 
-      ::printf("+++                           %-#10.*x  %-#10.*x\n",
-                                        width/8, reorderer->input2outputMap32[i],
-                                        width/8, reorderer->output2inputMap32[i]);
+      //TODO: for debug ::printf("+++                           %-#10.*x  %-#10.*x\n",
+      //TODO: for debug                                  width/8, reorderer->input2outputMap32[i],
+      //TODO: for debug                                  width/8, reorderer->output2inputMap32[i]);
       }
 
       return reorderer;

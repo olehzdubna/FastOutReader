@@ -27,17 +27,17 @@ StringData* StringData::read(std::ifstream& inFile) {
     long id ;
     int length ;
 
-    std::cout << "+++      StringData: " << std::endl;
+    //TODO: for debug std::cout << "+++      StringData: " << std::endl;
 
 	std::getline(inFile, line);
     /* integral data id */
     id = ::atol(line.data());
 
-    std::cout << "+++      Integral ID: " << id << std::endl;
+    //TODO: for debug std::cout << "+++      Integral ID: " << id << std::endl;
 
     StringData* stringData = nullptr;
     if ((stringData = static_cast<StringData*>(DataGroup::instance()->isObject(id))) ) {
-        std::cout << "+++    already seen this LabelEntry object" << std::endl;
+        //TODO: for debug std::cout << "+++    already seen this LabelEntry object" << std::endl;
         return stringData;
     }
 
@@ -46,7 +46,7 @@ StringData* StringData::read(std::ifstream& inFile) {
 	std::getline(inFile, line);
     length = ::atoi(line.data());
 
-    std::cout << "+++      length=" << length << std::endl;
+    //TODO: for debug std::cout << "+++      length=" << length << std::endl;
 
     /* stringblock */
     stringData->readStringBlock(inFile, length);

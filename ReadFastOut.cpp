@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
            od.add_options()
 	   ("help,h", "Show usage")
 	   ("input,i", boost::program_options::value<std::string>(&inFileName)->required(), "In filename")
-	   ("output,o", boost::program_options::value(&outFileName), "Out filename");
+	   ("output,o", boost::program_options::value<std::string>(&outFileName)->required(), "Out filename");
 
            boost::program_options::store(boost::program_options::parse_command_line(argc, argv, od), vm);
 	   boost::program_options::notify(vm);
@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
 	char v[32];
 
 	auto dataSet = dataGroup->getDataSets().front();
-	std::cout << "+++  start time: " << dataSet->getTime(dataSet->getStartSample()) << ", trig time: " << dataSet->getTime(dataSet->getTrig()) << std::endl;
+	//TODO: for debug std::cout << "+++  start time: " << dataSet->getTime(dataSet->getStartSample()) << ", trig time: " << dataSet->getTime(dataSet->getTrig()) << std::endl;
 
 	auto ctx = ::fstWriterCreate(outFileName.c_str(), 1);
 	fstWriterSetPackType(ctx, FST_WR_PT_LZ4);
@@ -125,7 +125,7 @@ int main(int argc, char** argv) {
 
 	fstWriterSetUpscope(ctx);
         
-	std::atomic_int sampleCount(dataSet->getLastSample());
+	std::atomic_int sampleCount(dataSet->getLastSample() * vars.size());
 	double progressNormalizationExponent = std::floor(std::log10(sampleCount.load()));
 	std::atomic_ullong progressNormalizationFactor(std::pow(10,progressNormalizationExponent));
         std::atomic_int progressIdx(0);
@@ -144,7 +144,7 @@ int main(int argc, char** argv) {
              const auto& progressBar = [](auto x, auto y, auto z) -> rxterm::FlowLayout<> 
 	     {
                  return {
-                            rxterm::Text("Reading samples..."),
+                            rxterm::Text("Processing samples..."),
                             rxterm::FlowLayout<>{
                             rxterm::MaxWidth(20, rxterm::Progress(x)),
                             rxterm::MaxWidth(20, rxterm::Progress(y)),
@@ -167,9 +167,9 @@ int main(int argc, char** argv) {
 
 	int timIdx = dataSet->getStartSample();
 //	for(int timIdx = dataSet->getStartSample(); timIdx < 100; timIdx++)
-	for(;progressIdx.load() < sampleCount.load() && timIdx < sampleCount.load();)
+	while(timIdx < dataSet->getLastSample())
 	{
-	//	std::cout << "time " << dataSet->getTime(timIdx) - startTime << std::endl;
+		//std::cout << "time " << dataSet->getTime(timIdx) - startTime << std::endl;
 		fstWriterEmitTimeChange(ctx, dataSet->getTime(timIdx) - startTime);
 
 		for(auto& var: vars) {
@@ -186,11 +186,11 @@ int main(int argc, char** argv) {
 				fstWriterEmitValueChange(ctx, var.handle, &v[0]);
 //				std::cout << std::endl;
 			}
+		        progressIdx.store(progressIdx.load()+1);
 		}
 		progressIdx.store(progressIdx.load()+1);
 		++timIdx;
 	}
-
         progressThread.join();
 
 	::fstWriterClose(ctx);

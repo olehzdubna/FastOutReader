@@ -29,10 +29,10 @@ bool Label::process() {
 
 	std::getline(inFile, line);
 	id = ::atol(line.data());
-    std::cout << "+++  Label ID: " << id << std::endl;
+    //TODO: for debug std::cout << "+++  Label ID: " << id << std::endl;
 
     if (( sharedObject = DataGroup::instance()->isObject(id) )) {
-        std::cout << "+++    already seen this LabelEntry object" << std::endl;
+        //TODO: for debug std::cout << "+++    already seen this LabelEntry object" << std::endl;
         return false;
     }
 
@@ -45,7 +45,7 @@ bool Label::process() {
     while((pos = name.find("`")) != std::string::npos)
     		name.erase(pos);
 
-    std::cout << "+++    Label Name: " << name << std::endl;
+    //TODO: for debug std::cout << "+++    Label Name: " << name << std::endl;
 
     /* label data */
     if(!readLabelData())

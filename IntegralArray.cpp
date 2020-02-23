@@ -33,18 +33,21 @@ IntegralArray* IntegralArray::read(std::ifstream& inFile,int numbits, bool sign,
 	int count, maxsize;
 	int column = 0;
 	int size = numbits / 8 ;
+        (void)count;
+	(void)column;
+	(void)maxsize;
 
-	std::cout << "+++      IntegralArray with " << numbits << " bits and sign " << sign << std::endl;
+	//TODO: for debug std::cout << "+++      IntegralArray with " << numbits << " bits and sign " << sign << std::endl;
 
 	std::getline(inFile, line);
 	/* integral data id */
 	id = ::atol(line.data());
 
-	std::cout << "+++      Integral ID: " << id << std::endl;
+	//TODO: for debug std::cout << "+++      Integral ID: " << id << std::endl;
 
 	IntegralArray* integralArray = nullptr;
 	if ((integralArray = static_cast<IntegralArray*>(DataGroup::instance()->isObject(id))) ) {
-		std::cout << "+++    already seen this LabelEntry object" << std::endl;
+		//TODO: for debug std::cout << "+++    already seen this LabelEntry object" << std::endl;
 		return integralArray;
 	}
 
@@ -54,7 +57,7 @@ IntegralArray* IntegralArray::read(std::ifstream& inFile,int numbits, bool sign,
 	  /* length */
 	len = ::atol(line.data());
 
-	std::cout << "+++        Length: " << len << "  Size: " << size*len << std::endl;
+	//TODO: for debug std::cout << "+++        Length: " << len << "  Size: " << size*len << std::endl;
 
 	/* stuckone and stuckzero */
 	std::getline(inFile, line);

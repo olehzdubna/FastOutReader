@@ -14,8 +14,9 @@
 #define ID_AUX_DATA_HEADER "HPLogic_Additional_Data_File"
 
 Utils::Utils(std::ifstream& anInFile)
- : inFile(anInFile)
- , GlobalSuppressDataOutput(false)
+// TODO unused 
+// : inFile(anInFile)
+// , GlobalSuppressDataOutput(false)
 {}
 
 Utils::~Utils() {
@@ -33,10 +34,13 @@ bool Utils::readAttributes(std::ifstream& inFile, const char *who)
     int num ;
     int bitnum ;
 	std::string line;
+    (void)num;
+    (void)bitnum;
+    (void)i;
 
 	std::getline(inFile, line);
 	num = ::atoi(line.data());
-    std::cout << "+++  " << who << "--Attributes: " << num << std::endl;
+    //TODO: for debug std::cout << "+++  " << who << "--Attributes: " << num << std::endl;
 
     return true;
 }
