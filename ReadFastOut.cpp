@@ -125,7 +125,7 @@ int main(int argc, char** argv) {
 
 	fstWriterSetUpscope(ctx);
         
-	std::atomic_int sampleCount(dataSet->getLastSample());
+	std::atomic_int sampleCount(dataSet->getLastSample() * vars.size());
 	double progressNormalizationExponent = std::floor(std::log10(sampleCount.load()));
 	std::atomic_ullong progressNormalizationFactor(std::pow(10,progressNormalizationExponent));
         std::atomic_int progressIdx(0);
@@ -167,9 +167,9 @@ int main(int argc, char** argv) {
 
 	int timIdx = dataSet->getStartSample();
 //	for(int timIdx = dataSet->getStartSample(); timIdx < 100; timIdx++)
-	for(;progressIdx.load() < sampleCount.load() && timIdx < sampleCount.load();)
+	while(timIdx < dataSet->getLastSample())
 	{
-	//	std::cout << "time " << dataSet->getTime(timIdx) - startTime << std::endl;
+		//std::cout << "time " << dataSet->getTime(timIdx) - startTime << std::endl;
 		fstWriterEmitTimeChange(ctx, dataSet->getTime(timIdx) - startTime);
 
 		for(auto& var: vars) {
@@ -186,11 +186,11 @@ int main(int argc, char** argv) {
 				fstWriterEmitValueChange(ctx, var.handle, &v[0]);
 //				std::cout << std::endl;
 			}
+		        progressIdx.store(progressIdx.load()+1);
 		}
 		progressIdx.store(progressIdx.load()+1);
 		++timIdx;
 	}
-
         progressThread.join();
 
 	::fstWriterClose(ctx);
