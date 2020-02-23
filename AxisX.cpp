@@ -20,7 +20,7 @@ AxisX* AxisX::read(std::ifstream& inFile)
 	std::string line;
 	std::getline(inFile, line);
 
-	std::cout << "+++ DataSet::readXaxis " << line << std::endl;
+	//TODO: for debug std::cout << "+++ DataSet::readXaxis " << line << std::endl;
 
     if (line == "AbscissaData") {
         return readAbscissaData();

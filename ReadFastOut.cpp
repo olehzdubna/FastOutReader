@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
 	char v[32];
 
 	auto dataSet = dataGroup->getDataSets().front();
-	std::cout << "+++  start time: " << dataSet->getTime(dataSet->getStartSample()) << ", trig time: " << dataSet->getTime(dataSet->getTrig()) << std::endl;
+	//TODO: for debug std::cout << "+++  start time: " << dataSet->getTime(dataSet->getStartSample()) << ", trig time: " << dataSet->getTime(dataSet->getTrig()) << std::endl;
 
 	auto ctx = ::fstWriterCreate(outFileName.c_str(), 1);
 	fstWriterSetPackType(ctx, FST_WR_PT_LZ4);

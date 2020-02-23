@@ -35,7 +35,7 @@ Extractor* Extractor::read(std::ifstream& inFile) {
 	/* get the width in bit and bytes of the mask and whether it needs to
 	   be inverted or not */
 	std::getline(inFile, line);
-	std::cout << "+++ Label::readExtractorInfo, line: " << line << std::endl;
+	//TODO: for debug std::cout << "+++ Label::readExtractorInfo, line: " << line << std::endl;
 
 	auto items = Utils::tokenizeStr(line);
 	extractor->widthInBytes = ::atoi(items.front().data());
@@ -46,7 +46,7 @@ Extractor* Extractor::read(std::ifstream& inFile) {
 
 //	fscanf( fp, "%u %u %d ", &e->widthInBytes, &e->width, &e->inverted ) ;
 
-	std::cout << "+++      width=" << extractor->width << "  bytes=" << extractor->widthInBytes << "  inverted=" << extractor->inverted << std::endl;
+	//TODO: for debug std::cout << "+++      width=" << extractor->width << "  bytes=" << extractor->widthInBytes << "  inverted=" << extractor->inverted << std::endl;
 
 	/* get the label mask */
     for (int idx = 0 ; idx < extractor->widthInBytes ; idx++ ) {
@@ -58,15 +58,15 @@ Extractor* Extractor::read(std::ifstream& inFile) {
     	  extractor->maskIdx.push_front(idx);
     }
 
-    std::cout << "+++      mask[";
-    for(auto msk: extractor->mask)
-    	std::cout << std::hex << (int)msk << std::dec << " ";
-    std::cout << "]" << std::endl;
+    //TODO: for debug std::cout << "+++      mask[";
+    //TODO: for debug for(auto msk: extractor->mask)
+    //TODO: for debug 	std::cout << std::hex << (int)msk << std::dec << " ";
+    //TODO: for debug std::cout << "]" << std::endl;
 
-    std::cout << "+++      mask idx[";
-    for(auto mId: extractor->maskIdx)
-    	std::cout << (int)mId << " ";
-    std::cout << "]" << std::endl;
+    //TODO: for debug std::cout << "+++      mask idx[";
+    //TODO: for debug for(auto mId: extractor->maskIdx)
+    //TODO: for debug	std::cout << (int)mId << " ";
+    //TODO: for debug std::cout << "]" << std::endl;
 
 	/* a reserved field for future use */
 //    fscanf( fp, "%d\n", &tmp ) ;
@@ -74,12 +74,12 @@ Extractor* Extractor::read(std::ifstream& inFile) {
 	/* get the reorder direction - may or may not actually be used */
 	std::getline(inFile, line);
 	extractor->reorderDirection = ::atoi(line.data());
-	std::cout << "+++ reorderDirection " << extractor->reorderDirection << std::endl;
+	//TODO: for debug std::cout << "+++ reorderDirection " << extractor->reorderDirection << std::endl;
 
 	/* get the reorder structure flag */
 	std::getline(inFile, line);
 	haveReorderObject = ::atoi(line.data());
-	std::cout << "+++ haveReorderObject " << haveReorderObject << std::endl;
+	//TODO: for debug std::cout << "+++ haveReorderObject " << haveReorderObject << std::endl;
 
 	if ( haveReorderObject ) {
 		extractor->reorder = Reorderer::read(inFile);

@@ -33,24 +33,24 @@ PagedIntegralData* PagedIntegralData::read(std::ifstream& inFile, int numbits, i
 	    char filename[BUFSIZ] ;
 	    std::ifstream dataFile;
 
-	    std::cout << "+++      PagedIntegralData with " << numbits << " bits and sign " << sign << std::endl;
+	    //TODO: for debug std::cout << "+++      PagedIntegralData with " << numbits << " bits and sign " << sign << std::endl;
 
 		std::getline(inFile, line);
 	    /* integral data id */
 	    id = ::atol(line.data());
 
-	    std::cout << "+++      Integral ID: " << id << std::endl;
+	    //TODO: for debug std::cout << "+++      Integral ID: " << id << std::endl;
 
 	    /* id == 0 means that there is no data - reason unknown!!! */
 	    if ( id == 0 ) {
-	    	std::cout << "+++  Data missing! " << std::endl;
+	    	//TODO: for debug std::cout << "+++  Data missing! " << std::endl;
 	    	return nullptr;
 	    }
 
 	    PagedIntegralData* pagedIntegralData = nullptr;
 
 	    if ((pagedIntegralData = static_cast<PagedIntegralData*>(DataGroup::instance()->isObject(id)))) {
-	        std::cout << "+++    already seen this LabelEntry object" << std::endl;
+	        //TODO: for debug std::cout << "+++    already seen this LabelEntry object" << std::endl;
 	        return pagedIntegralData;
 	    }
 
@@ -61,7 +61,7 @@ PagedIntegralData* PagedIntegralData::read(std::ifstream& inFile, int numbits, i
 	    ::sscanf(line.data(), "%d `%[^`]`", &useFile, filename ) ;
 
 	    if ( useFile ) {
-	        std::cout << "+++      Data is in file " <<  filename << "." << std::endl;
+	        //TODO: for debug std::cout << "+++      Data is in file " <<  filename << "." << std::endl;
 	        dataFile.open(filename);
 	        if(!dataFile.is_open()) {
 	          /* full name did not work, try just base name */

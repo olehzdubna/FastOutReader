@@ -36,7 +36,7 @@ IntegralData* IntegralData::read(std::ifstream& inFile, int inegralTypeline) {
 	auto sectionName = items.front();
 	items.pop_front();
 
-    std::cout << "+++  IntegralData::read " << line << ", section: " << sectionName << std::endl;
+    //TODO: for debug std::cout << "+++  IntegralData::read " << line << ", section: " << sectionName << std::endl;
 
     if (sectionName == "BitPackedData") {
         integralData = BitPackedData::read(inFile);
@@ -47,7 +47,7 @@ IntegralData* IntegralData::read(std::ifstream& inFile, int inegralTypeline) {
     } else if  ( sectionName == "IntegralArray") {
     	bool isSigned = false;
         if ((numbits = Utils::extractIntType (items.front(), isSigned)) > 0) {
-            std::cout << "+++  IntegralData::read Array numbits " << numbits << ", sign " << isSigned << std::endl;
+            //TODO: for debug std::cout << "+++  IntegralData::read Array numbits " << numbits << ", sign " << isSigned << std::endl;
             integralData = IntegralArray::read(inFile, numbits, isSigned, inegralTypeline) ;
         } else {
     		std::cerr << "Invalid IntegralArray object" << std::endl;
@@ -55,7 +55,7 @@ IntegralData* IntegralData::read(std::ifstream& inFile, int inegralTypeline) {
     } else if  (sectionName == "PagedIntegralData") {
     	bool isSigned = false;
     	if((numbits = Utils::extractIntType (items.front(), isSigned)) > 0) {
-            std::cout << "+++  IntegralData::read Paged numbits " << numbits << ", sign " << isSigned << std::endl;
+            //TODO: for debug std::cout << "+++  IntegralData::read Paged numbits " << numbits << ", sign " << isSigned << std::endl;
             integralData = PagedIntegralData::read(inFile, numbits, isSigned);
     	} else {
     		std::cerr << "Invalid PagedIntegralData object" << std::endl;

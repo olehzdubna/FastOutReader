@@ -35,7 +35,7 @@ bool DataGroup::process() {
 
 	getline(inFile, signature);
 
-	std::cout << "+++ Signature: " << signature << std::endl;
+	//TODO: for debug std::cout << "+++ Signature: " << signature << std::endl;
 
 	if(signature != SIGNATURE_ID)
 		return false;
@@ -44,27 +44,29 @@ bool DataGroup::process() {
 	getline(inFile, line);
 
     ::sscanf(line.data(), "%d %d", &verMajor, &verMinor) ;
-    std::cout << "+++ Version: Major: " << verMajor << ", Minor: " << verMinor << std::endl;
+    //TODO: for debug std::cout << "+++ Version: Major: " << verMajor << ", Minor: " << verMinor << std::endl;
 
     /* the correlation bits */
 	getline(inFile, line);
-    std::cout << "+++ Correlation Bits: " << line << std::endl;
+    //TODO: for debug std::cout << "+++ Correlation Bits: " << line << std::endl;
 
 	int bit = 0;
     auto list = Utils::tokenizeInt(line);
 	int num = list.front();
 	list.pop_front();
+        (void)bit;
+	(void)num;
 
     for (auto& bit: list) {
         switch ( bit ) {
           case 0:
-        	  std::cout << "+++ Time ";
+        	  //TODO: for debug std::cout << "+++ Time ";
             break ;
           case 1:
-        	  std::cout << "+++ State ";
+        	  //TODO: for debug std::cout << "+++ State ";
             break ;
           default:
-        	  std::cout << "+++ unknown " << bit;
+        	  //TODO: for debug std::cout << "+++ unknown " << bit;
             break ;
         }
     }
@@ -74,19 +76,19 @@ bool DataGroup::process() {
 	getline(inFile, line);
     ::sscanf(line.data(), "%d %d\n", &timeCrossCorrID, &stateCrossCorrID ) ;
 
-    std::cout << "+++    Time cross correlation id = " << timeCrossCorrID << std::endl;
-    std::cout << "+++    State cross correlation id = " << stateCrossCorrID << std::endl;
+    //TODO: for debug std::cout << "+++    Time cross correlation id = " << timeCrossCorrID << std::endl;
+    //TODO: for debug std::cout << "+++    State cross correlation id = " << stateCrossCorrID << std::endl;
 
 	getline(inFile, line);
     numDataSets = ::atoi(line.data());
 
-    std::cout << "+++ DataSets: "  << numDataSets << std::endl;
+    //TODO: for debug std::cout << "+++ DataSets: "  << numDataSets << std::endl;
     std::flush(std::cout);
 
-    ///     std::cout << "+++ line |" << line << "|" << std::endl;
+    //TODO: for debug     std::cout << "+++ line |" << line << "|" << std::endl;
 
     for (int i = 0 ; i < numDataSets ; i++ ) {
-        std::cout << "+++ DataSet #" << i+1 << std::endl;
+        //TODO: for debug std::cout << "+++ DataSet #" << i+1 << std::endl;
         auto dataSet = new DataSet(inFile);
         dataSet->process();
         dataSets.push_back(dataSet);
@@ -99,12 +101,12 @@ SharedObject* DataGroup::isObject(long id) {
 	auto itr = sharedObjMap.find(id);
 	if(itr != sharedObjMap.end())
 	{
-		printf("+++ DataGroup::isObject id: %ld. obj: %p \n", id, itr->second);
+		//TODO: for debug printf("+++ DataGroup::isObject id: %ld. obj: %p \n", id, itr->second);
 
 		return itr->second;
 	}
 
-	printf("+++ DataGroup::isObject id: %ld. obj: nil \n", id);
+	//TODO: for debug printf("+++ DataGroup::isObject id: %ld. obj: nil \n", id);
 
 	return nullptr;
 }
@@ -113,7 +115,7 @@ bool DataGroup::addObject(SharedObject* anObj) {
 	auto itr = sharedObjMap.find(anObj->getId());
 	if(itr == sharedObjMap.end())
 	{
-		printf("+++ DataGroup::addObject id: %ld. obj: %p \n", anObj->getId(), anObj);
+		//TODO: for debug printf("+++ DataGroup::addObject id: %ld. obj: %p \n", anObj->getId(), anObj);
 		sharedObjMap[anObj->getId()] = anObj;
 		return true;
 	}

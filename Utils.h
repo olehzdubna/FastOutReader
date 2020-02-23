@@ -56,8 +56,8 @@ public:
 private:
 
 private:
-	std::ifstream& inFile;
-	bool GlobalSuppressDataOutput;
+//TODO: unused	std::ifstream& inFile;
+//TODO: unused	bool GlobalSuppressDataOutput;
 };
 
 #endif /* UTILS_H_ */

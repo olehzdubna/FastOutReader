@@ -31,7 +31,7 @@ TimeTags* TimeTags::read(std::ifstream& inFile, int pagedFlag) {
 	std::string line;
 	int haveData = 1 ;
 
-	std::cout << "+++  Time Tagged Data    " << pagedFlag << std::endl;
+	//TODO: for debug std::cout << "+++  Time Tagged Data    " << pagedFlag << std::endl;
 
 	auto timeTags = new TimeTags();
 
@@ -39,11 +39,11 @@ TimeTags* TimeTags::read(std::ifstream& inFile, int pagedFlag) {
 	/* number of samples and trigger position */
 	::sscanf(line.data(), "%d %d\n", &timeTags->samples, &timeTags->trig ) ;
 
-	std::cout << "+++    samples = " << timeTags->samples << "   trigger = " << timeTags->trig << std::endl;
+	//TODO: for debug std::cout << "+++    samples = " << timeTags->samples << "   trigger = " << timeTags->trig << std::endl;
 
 	if ( pagedFlag ) {
 		std::getline(inFile, line);
-		std::cout << "+++  TimeTags::read " << line << std::endl;
+		//TODO: for debug std::cout << "+++  TimeTags::read " << line << std::endl;
 		haveData = ::atoi(line.data());
 	}
 

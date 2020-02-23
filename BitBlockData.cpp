@@ -30,17 +30,17 @@ BitBlockData* BitBlockData::read(std::ifstream& inFile) {
 	std::string line;
 	long id;
 
-	std::cout << "+++      BitBlockData:" << std::endl;
+	//TODO: for debug std::cout << "+++      BitBlockData:" << std::endl;
 
 	std::getline(inFile, line);
 	/* integral data id */
 	id = ::atol(line.data());
 
-	std::cout << "+++      Integral ID: " << id << std::endl;
+	//TODO: for debug std::cout << "+++      Integral ID: " << id << std::endl;
 
 	BitBlockData* bitBlockData = nullptr;
 	if ((bitBlockData = static_cast<BitBlockData*>(DataGroup::instance()->isObject(id)))) {
-		std::cout << "+++    already seen this LabelEntry object" << std::endl;
+		//TODO: for debug std::cout << "+++    already seen this LabelEntry object" << std::endl;
 		return bitBlockData;
 	}
 
