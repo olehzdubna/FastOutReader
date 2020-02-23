@@ -144,7 +144,7 @@ int main(int argc, char** argv) {
              const auto& progressBar = [](auto x, auto y, auto z) -> rxterm::FlowLayout<> 
 	     {
                  return {
-                            rxterm::Text("Reading samples..."),
+                            rxterm::Text("Processing samples..."),
                             rxterm::FlowLayout<>{
                             rxterm::MaxWidth(20, rxterm::Progress(x)),
                             rxterm::MaxWidth(20, rxterm::Progress(y)),
