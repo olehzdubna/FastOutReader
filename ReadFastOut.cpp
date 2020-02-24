@@ -34,7 +34,7 @@ using namespace std::chrono_literals;
 
 int main(int argc, char** argv) {
 
-        std::string inFileName, outFileName;
+        std::string inFileName, outFileName, gtkwavePath;
         boost::program_options::options_description od("Usage: fastread");
 	boost::program_options::variables_map vm;
 	try 
@@ -42,7 +42,8 @@ int main(int argc, char** argv) {
            od.add_options()
 	   ("help,h", "Show usage")
 	   ("input,i", boost::program_options::value<std::string>(&inFileName)->required(), "In filename")
-	   ("output,o", boost::program_options::value<std::string>(&outFileName)->required(), "Out filename");
+	   ("output,o", boost::program_options::value<std::string>(&outFileName)->required(), "Out filename")
+           ("with-gtkwave,g", boost::program_options::value<std::string>(&gtkwavePath), "Feed output to gtkwave");
 
            boost::program_options::store(boost::program_options::parse_command_line(argc, argv, od), vm);
 	   boost::program_options::notify(vm);
@@ -197,6 +198,12 @@ int main(int argc, char** argv) {
 
 	delete dataGroup;
 
+        //TODO: Currently default to package installation unconditionally
+	//      in future consider adding `which` check for binary existenance  
+	//      in which case default to binary built from repository 
+	std::string commandStr = (!gtkwavePath.empty() ? gtkwavePath : "gtkwave") 
+	                          + " " +  outFileName;
+        std::system(commandStr.c_str());
 	return 0;
 }
 
