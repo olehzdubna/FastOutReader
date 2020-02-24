@@ -41,9 +41,9 @@ int main(int argc, char** argv) {
 	{
            od.add_options()
 	   ("help,h", "Show usage")
-	   ("input,i", boost::program_options::value<std::string>(&inFileName)->required(), "In filename")
-	   ("output,o", boost::program_options::value<std::string>(&outFileName)->required(), "Out filename")
-           ("with-gtkwave,g", boost::program_options::value<std::string>(&gtkwavePath), "Feed output to gtkwave");
+	   ("input,i", boost::program_options::value<std::string>(&inFileName), "In filename")
+	   ("output,o", boost::program_options::value<std::string>(&outFileName), "Out filename")
+           ("with-gtkwave,g", boost::program_options::value<std::string>(&gtkwavePath), "Feed output to gtkwave located elsewhere");
 
            boost::program_options::store(boost::program_options::parse_command_line(argc, argv, od), vm);
 	   boost::program_options::notify(vm);
@@ -52,10 +52,15 @@ int main(int argc, char** argv) {
                std::cout << od << std::endl;
 	       return 0;
 	   }
+	   if(inFileName.empty() || outFileName.empty())
+	   {
+	       throw std::runtime_error("Both input and output filepaths are required"); 
+	   }
         }
 	catch(const std::exception& e)
 	{
 	   std::cerr << "Failed to parse command-line arguments, reason: " << e.what() << std::endl;
+	   std::cout << od << std::endl;
            return -3;
 	}
 
