@@ -10,6 +10,7 @@
 #include <Utils.h>
 #include <DataGroup.h>
 #include <PagedIntegralData.h>
+#include <IfstreamWithState.h>
 
 PagedIntegralData::PagedIntegralData(long anId)
  : IntegralData(anId)
@@ -59,20 +60,27 @@ PagedIntegralData* PagedIntegralData::read(std::ifstream& inFile, int numbits, i
 	    /* is this data in this file or in separate file? */
 		std::getline(inFile, line);
 	    ::sscanf(line.data(), "%d `%[^`]`", &useFile, filename ) ;
+    
+           const auto& inFileWithPrefix = static_cast<const IfstreamWithState&>(inFile);
 
 	    if ( useFile ) {
 	        //TODO: for debug std::cout << "+++      Data is in file " <<  filename << "." << std::endl;
 	        dataFile.open(filename);
 	        if(!dataFile.is_open()) {
-	          /* full name did not work, try just base name */
 	          char *basename = strrchr( filename, '/' ) ;
 	          if (basename) {
-	        	  dataFile.open(basename+1);
-	        	  if(!dataFile.is_open()) {
+		         std::string basenameWithPrefix(inFileWithPrefix.getDirectoryPrefix() + "/" +
+                                                        std::string(basename+1));
+                          dataFile.open(basenameWithPrefix.c_str());
+			  if(!dataFile.is_open()) {
+	                      /* full name did not work, try just base name */
+	        	      dataFile.open(basename+1);
+	        	      if(!dataFile.is_open()) {
 	        		  std::cerr << "   Can't open file " << filename << std::endl;
 	        		  delete pagedIntegralData;
-	              	  return nullptr;
-	        	  }
+	              	          return nullptr;
+	        	      }
+			  }
 	          }
 	        }
 	        Utils::readAuxDataFileHeader(dataFile) ;

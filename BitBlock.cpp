@@ -10,6 +10,7 @@
 #include <BitBlock.h>
 #include <Utils.h>
 #include <DataGroup.h>
+#include <IfstreamWithState.h>
 
 BitBlock::BitBlock(long anId)
  : IntegralData (anId)
@@ -77,18 +78,24 @@ BitBlock* BitBlock::read(std::ifstream& inFile) {
 	//TODO: for debug std::cout << "+++  Label::readBitBlock " << line << std::endl;
 
 	::sscanf(line.data(), "%d `%[^`]`", &useFile, filename ) ;
-
+        
+	const auto& inFileWithPrefix = static_cast<const IfstreamWithState&>(inFile);
 	if ( useFile ) {
 		//TODO: for debug std::cout << "+++      Data is in file " <<  filename << "." << std::endl;
 		dataFile.open(filename);
 		if(!dataFile.is_open()) {
-		  /* full name did not work, try just base name */
 		  char *basename = strrchr( filename, '/' ) ;
 		  if (basename) {
-			  dataFile.open(basename+1);
+		          std::string basenameWithPrefix(inFileWithPrefix.getDirectoryPrefix() + "/" + 
+			                                 std::string(basename+1));
+			  dataFile.open(basenameWithPrefix.c_str());
 			  if(!dataFile.is_open()) {
-				  std::cerr << "   Can't open file " << basename+1 << std::endl;
+		             /* full name did not work, try just base name */
+			     dataFile.open(basename + 1);
+			     if(!dataFile.is_open()) {
+				  std::cerr << "   Can't open file " << (basename + 1) << std::endl;
 				  return nullptr;
+		              }
 			  }
 		  }
 		}

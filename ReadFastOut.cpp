@@ -13,12 +13,14 @@
 #include <chrono>
 
 #include <boost/program_options.hpp>
+#include <boost/filesystem/path.hpp>
 
 #include <fstapi.h>
 
 #include <DataGroup.h>
 #include <DataSet.h>
 #include <Label.h>
+#include <IfstreamWithState.h>
 
 #include "terminal.hpp"
 #include "style.hpp"
@@ -34,15 +36,16 @@ using namespace std::chrono_literals;
 
 int main(int argc, char** argv) {
 
-        std::string inFileName, outFileName;
+        std::string inFileName, outFileName, gtkwavePath;
         boost::program_options::options_description od("Usage: fastread");
 	boost::program_options::variables_map vm;
 	try 
 	{
            od.add_options()
 	   ("help,h", "Show usage")
-	   ("input,i", boost::program_options::value<std::string>(&inFileName)->required(), "In filename")
-	   ("output,o", boost::program_options::value<std::string>(&outFileName)->required(), "Out filename");
+	   ("input,i", boost::program_options::value<std::string>(&inFileName), "In filename")
+	   ("output,o", boost::program_options::value<std::string>(&outFileName), "Out filename")
+           ("with-gtkwave,g", boost::program_options::value<std::string>(&gtkwavePath), "Feed output to gtkwave located elsewhere");
 
            boost::program_options::store(boost::program_options::parse_command_line(argc, argv, od), vm);
 	   boost::program_options::notify(vm);
@@ -51,21 +54,27 @@ int main(int argc, char** argv) {
                std::cout << od << std::endl;
 	       return 0;
 	   }
+	   if(inFileName.empty() || outFileName.empty())
+	   {
+	       throw std::runtime_error("Both input and output filepaths are required"); 
+	   }
         }
 	catch(const std::exception& e)
 	{
 	   std::cerr << "Failed to parse command-line arguments, reason: " << e.what() << std::endl;
+	   std::cout << od << std::endl;
            return -3;
 	}
 
-	std::ifstream inFile;
-	inFile.open(inFileName);
-	if(!inFile.is_open() || inFile.fail()) {
+        boost::filesystem::path filepath(inFileName);
+	const auto& dirPrefix = filepath.parent_path().native();
+        auto inFile = std::make_unique<IfstreamWithState>(dirPrefix, inFileName);
+	if(!inFile->is_open() || inFile->fail()) {
 		std::cerr << "Cannot open input file " << inFileName << std::endl;
 		return -2;
 	}
 
-	auto dataGroup = new DataGroup(inFile);
+	auto dataGroup = new DataGroup(*inFile.get());
 	dataGroup->process();
 
 	std::cout << "*** DONE Reading ***" << std::endl;
@@ -197,6 +206,19 @@ int main(int argc, char** argv) {
 
 	delete dataGroup;
 
+	std::string commandStr = (!gtkwavePath.empty() ? gtkwavePath : "gtkwave");
+	if(std::system(commandStr.c_str()) != 0)
+	{
+            std::cerr << "***WARNING*** Could not resolve gtkwave path = " << commandStr 
+	              << ", defaulting to binary built from repository" << std::endl; 
+            commandStr = "./gtkwave3";
+	}
+        commandStr += " " + outFileName;  
+        if(std::system(commandStr.c_str()) != 0)
+	{
+            std::cerr << "***ERROR*** Failed to start " << commandStr << std::endl;
+	    return -4;
+	}
 	return 0;
 }
 
