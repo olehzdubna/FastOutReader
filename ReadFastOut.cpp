@@ -13,12 +13,14 @@
 #include <chrono>
 
 #include <boost/program_options.hpp>
+#include <boost/filesystem/path.hpp>
 
 #include <fstapi.h>
 
 #include <DataGroup.h>
 #include <DataSet.h>
 #include <Label.h>
+#include <IfstreamWithState.h>
 
 #include "terminal.hpp"
 #include "style.hpp"
@@ -64,14 +66,15 @@ int main(int argc, char** argv) {
            return -3;
 	}
 
-	std::ifstream inFile;
-	inFile.open(inFileName);
-	if(!inFile.is_open() || inFile.fail()) {
+        boost::filesystem::path filepath(inFileName);
+	const auto& dirPrefix = filepath.parent_path().native();
+        auto inFile = std::make_unique<IfstreamWithState>(dirPrefix, inFileName);
+	if(!inFile->is_open() || inFile->fail()) {
 		std::cerr << "Cannot open input file " << inFileName << std::endl;
 		return -2;
 	}
 
-	auto dataGroup = new DataGroup(inFile);
+	auto dataGroup = new DataGroup(*inFile.get());
 	dataGroup->process();
 
 	std::cout << "*** DONE Reading ***" << std::endl;
