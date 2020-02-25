@@ -17,6 +17,12 @@ ExternalProject_Add(rxterm
     INSTALL_COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_BINARY_DIR}/src/rxterm/rxterm/include ${CMAKE_SOURCE_DIR}/rxterm-headers
 )
 
+ExternalProject_Add(gtkwave
+    GIT_REPOSITORY    git@github.com:maxsteciuk/gtkwave.git
+    GIT_SUBMODULES ""
+    INSTALL_COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/gtkwave-prefix/src/gtkwave-build/gtkwave3/gtkwave3 ${CMAKE_BINARY_DIR}/
+)
+
 file(GLOB LIBFST_SRC ${PROJECT_SOURCE_DIR}/fst/fstapi.c 
                      ${PROJECT_SOURCE_DIR}/fst/fastlz.c 
 		     ${PROJECT_SOURCE_DIR}/fst/lz4.c)
@@ -30,7 +36,7 @@ file(GLOB FASTREAD_SRC ${PROJECT_SOURCE_DIR}/*.cpp)
 
 
 add_executable(fastread ${FASTREAD_SRC})
-add_dependencies(fastread rxterm)
+add_dependencies(fastread rxterm gtkwave)
 target_include_directories(fastread PUBLIC 
                           ${PROJECT_SOURCE_DIR} 
 			  ${PROJECT_SOURCE_DIR}/fst

@@ -203,12 +203,19 @@ int main(int argc, char** argv) {
 
 	delete dataGroup;
 
-        //TODO: Currently default to package installation unconditionally
-	//      in future consider adding `which` check for binary existenance  
-	//      in which case default to binary built from repository 
-	std::string commandStr = (!gtkwavePath.empty() ? gtkwavePath : "gtkwave") 
-	                          + " " +  outFileName;
-        std::system(commandStr.c_str());
+	std::string commandStr = (!gtkwavePath.empty() ? gtkwavePath : "gtkwave");
+	if(std::system(commandStr.c_str()) != 0)
+	{
+            std::cerr << "***WARNING*** Could not resolve gtkwave path = " << commandStr 
+	              << ", defaulting to binary built from repository" << std::endl; 
+            commandStr = "./gtkwave3";
+	}
+        commandStr += " " + outFileName;  
+        if(std::system(commandStr.c_str()) != 0)
+	{
+            std::cerr << "***ERROR*** Failed to start " << commandStr << std::endl;
+	    return -4;
+	}
 	return 0;
 }
 
