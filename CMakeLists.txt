@@ -11,7 +11,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb -O3 -Wall")
 find_package(Boost 1.53.0 REQUIRED COMPONENTS program_options filesystem)
 
 ExternalProject_Add(rxterm
-    GIT_REPOSITORY    git@github.com:olehzdubna/rxterm.git
+    GIT_REPOSITORY    https://github.com/olehzdubna/rxterm.git
     BUILD_IN_SOURCE true
     PREFIX ${CMAKE_BINARY_DIR}
     INSTALL_COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_BINARY_DIR}/src/rxterm/rxterm/include ${CMAKE_SOURCE_DIR}/rxterm-headers
