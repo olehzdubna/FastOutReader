@@ -29,7 +29,6 @@ std::shared_ptr<IntegralArray> IntegralArray::read(std::ifstream& inFile,int num
 	long id ;
 	int len ;
 
-	char *buffer ;
 	int count, maxsize;
 	int column = 0;
 	int size = numbits / 8 ;
@@ -64,9 +63,10 @@ std::shared_ptr<IntegralArray> IntegralArray::read(std::ifstream& inFile,int num
 	/* sscanf( tmpstr, "%s %s\n", x, y ) ; */
 
 	/* raw bytes */
-	buffer = new char[size * len];
+	auto buffer = std::shared_ptr<char>(new char[size * len],
+	                                      std::default_delete<char[]>());
 
-	inFile.read(buffer, size * len) ;
+	inFile.read(buffer.get(), size * len) ;
 
 	len = len / ipl ;    /* adjust len/size to account for integralsPerLine */
 	size = size * ipl ;  /* used by BitPackedData objects...                */

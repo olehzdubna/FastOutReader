@@ -14,12 +14,8 @@
 
 PagedIntegralData::PagedIntegralData(long anId)
  : IntegralData(anId)
- , buffer(nullptr)
  , numSamples(0)
  , numBytesPerSample(0) {
-}
-
-PagedIntegralData::~PagedIntegralData() {
 }
 
 std::shared_ptr<PagedIntegralData> PagedIntegralData::read(std::ifstream& inFile, int numbits, int sign) {
@@ -94,8 +90,9 @@ std::shared_ptr<PagedIntegralData> PagedIntegralData::read(std::ifstream& inFile
 	    ::sscanf(line.data(), "%d %d\n", &pagedIntegralData->numSamples, &pagedIntegralData->numBytesPerSample) ;
 
 	    /* raw bytes */
-	    pagedIntegralData->buffer = new uint8_t[pagedIntegralData->numSamples * pagedIntegralData->numBytesPerSample];
-	    dataFile.read((char*)pagedIntegralData->buffer, pagedIntegralData->numBytesPerSample * pagedIntegralData->numSamples);
+	    pagedIntegralData->buffer = std::shared_ptr<uint8_t>(new uint8_t[pagedIntegralData->numSamples * pagedIntegralData->numBytesPerSample],
+	                                                         std::default_delete<uint8_t>());
+	    dataFile.read((char*)pagedIntegralData->buffer.get(), pagedIntegralData->numBytesPerSample * pagedIntegralData->numSamples);
 
 	    DataGroup::instance()->addObject(pagedIntegralData);
 
@@ -110,7 +107,7 @@ void PagedIntegralData::extractBytes(int aRecIdx, std::vector<uint8_t>& aByteVec
 	if(aRecIdx >= numSamples)
 		return;
 
-	auto bytes = &buffer[aRecIdx*numBytesPerSample];
+	auto bytes = &buffer.get()[aRecIdx*numBytesPerSample];
 	for(int i=0; i<numBytesPerSample; i++)
 		aByteVec.push_back(bytes[i]);
 

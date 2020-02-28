@@ -14,14 +14,10 @@
 class BitBlock: public IntegralData {
 public:
 	BitBlock(long anId);
-	~BitBlock();
-
 	static std::shared_ptr<BitBlock> read(std::ifstream& inFile);
-
 	const char* getRecord(int anIdx) const;
-
 private:
-	char* buffer;
+	std::shared_ptr<char> buffer;
 	int   numSamples;
 	int   numBytesPerSample;
 };

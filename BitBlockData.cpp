@@ -60,11 +60,7 @@ std::shared_ptr<BitBlockData> BitBlockData::read(std::ifstream& inFile) {
 //    }
 
 	/* some memory cleanup... */
-
 //    free( extractor.mask );
-
-	bitBlockData->extractor->deleteReorder();
-
 	return bitBlockData;
 }
 

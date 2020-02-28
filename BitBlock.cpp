@@ -14,13 +14,8 @@
 
 BitBlock::BitBlock(long anId)
  : IntegralData (anId)
- , buffer(nullptr)
  , numSamples(0)
  , numBytesPerSample() {
-}
-
-BitBlock::~BitBlock() {
-	delete [] buffer;
 }
 
 /*
@@ -117,9 +112,10 @@ std::shared_ptr<BitBlock> BitBlock::read(std::ifstream& inFile) {
 	//TODO: for debug std::cout << "+++        Number samples: " << bitBlock->numSamples << "  Bytes Per Sample: " << bitBlock->numBytesPerSample << std::endl;
 
 	/* raw bytes */
-	bitBlock->buffer = new char[bitBlock->numSamples * bitBlock->numBytesPerSample];
+	bitBlock->buffer = std::shared_ptr<char>(new char[bitBlock->numSamples * bitBlock->numBytesPerSample],
+	                                         std::default_delete<char[]>());
 
-	dataFile.read(bitBlock->buffer, bitBlock->numBytesPerSample * bitBlock->numSamples);
+	dataFile.read(bitBlock->buffer.get(), bitBlock->numBytesPerSample * bitBlock->numSamples);
 
 	std::getline(inFile, line);
 
@@ -133,7 +129,7 @@ std::shared_ptr<BitBlock> BitBlock::read(std::ifstream& inFile) {
 }
 
 const char* BitBlock::getRecord(int anIdx) const {
-	return &buffer[anIdx * numBytesPerSample];
+	return &buffer.get()[anIdx * numBytesPerSample];
 }
 
 

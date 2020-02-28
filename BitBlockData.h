@@ -21,7 +21,7 @@ public:
 	void extractBits(int aRecIdx, std::vector<bool>& aBitVec);
 
 private:
-	Extractor* extractor;
+	std::shared_ptr<Extractor> extractor;
 	std::shared_ptr<BitBlock> bitBlock;
 };
 
