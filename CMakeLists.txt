@@ -19,7 +19,7 @@ ExternalProject_Add(rxterm
 
 if(${BUILD_GTKWAVE})
     ExternalProject_Add(gtkwave
-       GIT_REPOSITORY    git@github.com:maxsteciuk/gtkwave.git
+       GIT_REPOSITORY   https://github.com/maxsteciuk/gtkwave.git
        GIT_SUBMODULES ""
        INSTALL_COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/gtkwave-prefix/src/gtkwave-build/gtkwave3/gtkwave3 ${CMAKE_BINARY_DIR}/
     )
