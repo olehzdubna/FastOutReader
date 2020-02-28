@@ -48,29 +48,7 @@ bool DataGroup::process() {
 
     /* the correlation bits */
 	getline(inFile, line);
-    //TODO: for debug std::cout << "+++ Correlation Bits: " << line << std::endl;
-
-	int bit = 0;
-    auto list = Utils::tokenizeInt(line);
-	int num = list.front();
-	list.pop_front();
-        (void)bit;
-	(void)num;
-
-    for (auto& bit: list) {
-        switch ( bit ) {
-          case 0:
-        	  //TODO: for debug std::cout << "+++ Time ";
-            break ;
-          case 1:
-        	  //TODO: for debug std::cout << "+++ State ";
-            break ;
-          default:
-        	  //TODO: for debug std::cout << "+++ unknown " << bit;
-            break ;
-        }
-    }
-    std::cout << std::endl;
+        printBits(line);
 
     /* the cross correlation id's */
 	getline(inFile, line);
@@ -83,11 +61,11 @@ bool DataGroup::process() {
     numDataSets = ::atoi(line.data());
 
     //TODO: for debug std::cout << "+++ DataSets: "  << numDataSets << std::endl;
-    std::flush(std::cout);
+    // std::flush(std::cout);
 
     //TODO: for debug     std::cout << "+++ line |" << line << "|" << std::endl;
 
-    for (int i = 0 ; i < numDataSets ; i++ ) {
+    for (auto i = 0 ; i < numDataSets ; i++ ) {
         //TODO: for debug std::cout << "+++ DataSet #" << i+1 << std::endl;
         auto dataSet = std::make_shared<DataSet>(inFile);
         dataSet->process();
@@ -123,3 +101,28 @@ bool DataGroup::addObject(std::shared_ptr<SharedObject> anObj) {
 	return false;
 }
 
+void DataGroup::printBits(const std::string& line)
+{
+	int bit = 0;
+        auto list = Utils::tokenizeInt(line);
+	const auto num = list.front();
+	list.pop_front();
+        (void)bit;
+	(void)num;
+
+        //TODO: for debug std::cout << "+++ Correlation Bits: " << line << std::endl;
+        for (auto& bit: list) {
+             switch ( bit ) {
+                 case 0:
+        	     //TODO: for debug std::cout << "+++ Time ";
+                     break ;
+                 case 1:
+        	      //TODO: for debug std::cout << "+++ State ";
+                      break ;
+                 default:
+        	      //TODO: for debug std::cout << "+++ unknown " << bit;
+                      break ;
+             }
+        }
+        //TODO: for debug std::cout << std::endl;
+}

@@ -32,6 +32,7 @@ public:
 
 	std::shared_ptr<SharedObject> isObject(long id);
 	bool addObject(std::shared_ptr<SharedObject> anObj);
+        void printBits(const std::string& line);
 private:
        DataGroup(const DataGroup&)=delete;
        DataGroup& operator=(const DataGroup&)=delete;

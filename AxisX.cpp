@@ -9,6 +9,8 @@
 #include <AxisX.h>
 #include <TimeTags.h>
 #include <Periodic.h>
+#include <Periodic2.h>
+#include <Utils.h>
 
 std::shared_ptr<AxisX> AxisX::read(std::ifstream& inFile)
 {
@@ -23,11 +25,11 @@ std::shared_ptr<AxisX> AxisX::read(std::ifstream& inFile)
 	//TODO: for debug std::cout << "+++ DataSet::readXaxis " << line << std::endl;
 
     if (line == "AbscissaData") {
-        return readAbscissaData();
+        return readAbscissaData(inFile);
     } else if  (line == "Periodic") {
         return Periodic::read(inFile);
     } else if  (line == "Periodic2") {
-        return readPeriodic2();
+        return Periodic2::read(inFile);
     } else if  (line == "TimeTags") {
         return TimeTags::read(inFile, 0);
     } else if  (line == "PagedTimeTags") {
@@ -38,10 +40,14 @@ std::shared_ptr<AxisX> AxisX::read(std::ifstream& inFile)
     return std::shared_ptr<AxisX>();
 }
 
-std::shared_ptr<AxisX> AxisX::readAbscissaData() {
-	return std::shared_ptr<AxisX>();
-}
+std::shared_ptr<AxisX> AxisX::readAbscissaData(std::ifstream& inFile) {
+     // Read number of samples and trigger time for all of the labels 
+     auto abscissa = std::make_shared<AxisX>();
+     
+     std::string line; 
+     std::getline(inFile, line);
+     ::scanf(line.data(), "%d %d\n", &abscissa->samples, &abscissa->trig);
 
-std::shared_ptr<AxisX> AxisX::readPeriodic2() {
-	return std::shared_ptr<AxisX>();
+     Utils::readAttributes(inFile, "AbscissaData");     
+     return abscissa;
 }

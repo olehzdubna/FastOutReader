@@ -77,17 +77,17 @@ std::shared_ptr<BitBlock> BitBlock::read(std::ifstream& inFile) {
 	const auto& inFileWithPrefix = static_cast<const IfstreamWithState&>(inFile);
 	if ( useFile ) {
 		//TODO: for debug std::cout << "+++      Data is in file " <<  filename << "." << std::endl;
-		dataFile.open(filename);
-		if(!dataFile.is_open()) {
+		dataFile.open(filename, std::ios::binary);
+		if(!dataFile.is_open() || dataFile.fail()) {
 		  char *basename = strrchr( filename, '/' ) ;
 		  if (basename) {
 		          std::string basenameWithPrefix(inFileWithPrefix.getDirectoryPrefix() + "/" + 
 			                                 std::string(basename+1));
-			  dataFile.open(basenameWithPrefix.c_str());
-			  if(!dataFile.is_open()) {
+			  dataFile.open(basenameWithPrefix.c_str(), std::ios::binary);
+			  if(!dataFile.is_open() || dataFile.fail()) {
 		             /* full name did not work, try just base name */
-			     dataFile.open(basename + 1);
-			     if(!dataFile.is_open()) {
+			     dataFile.open(basename + 1, std::ios::binary);
+			     if(!dataFile.is_open() || dataFile.fail()) {
 				  std::cerr << "   Can't open file " << (basename + 1) << std::endl;
 				  return nullptr;
 		              }

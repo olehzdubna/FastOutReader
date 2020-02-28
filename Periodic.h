@@ -26,7 +26,18 @@ public:
 	{return samples;}
 	int getTrig()
 	{return trig;}
+        int getFirstTime()
+	{return firstTime;}
+        int getIncrementTime()
+	{return incrementTime;}
 
+        void update(int asamples, int atrig, int origin, int increment)
+	{
+            samples = asamples;
+	    trig = atrig;
+	    firstTime = origin;
+            incrementTime = increment;
+	}
 private:
 	int samples;
 	int trig;

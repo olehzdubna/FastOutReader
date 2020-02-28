@@ -25,13 +25,15 @@ public:
 	{return 0;}
 
 	virtual int getTrig()
-	{return 0;}
+	{return samples;}
 	virtual int getSamples()
-	{return 0;}
+	{return trig;}
 
 private:
-	static std::shared_ptr<AxisX> readAbscissaData();
-	static std::shared_ptr<AxisX> readPeriodic2();
+	static std::shared_ptr<AxisX> readAbscissaData(std::ifstream& inFile);
+private:
+         int samples{0};
+	 int trig{0};
 };
 
 #endif /* AXISX_H_ */
