@@ -23,10 +23,10 @@
 //  See 'IntegralData' section of online help for HPLogic Fast Binary Data
 //  File Format under the File Out tool (6.0)
 */
-IntegralData* IntegralData::read(std::ifstream& inFile, int inegralTypeline) {
+std::shared_ptr<IntegralData> IntegralData::read(std::ifstream& inFile, int inegralTypeline) {
 
     int numbits ;
-    IntegralData* integralData = nullptr;
+    std::shared_ptr<IntegralData> integralData;
 
     std::string line;
 

@@ -13,7 +13,6 @@
 BitBlockData::BitBlockData(long anId)
  : IntegralData(anId)
  , extractor(nullptr)
- , bitBlock(nullptr)
 {
 }
 
@@ -25,7 +24,7 @@ BitBlockData::~BitBlockData() {
 //  See 'IntegralData->BitBlockData' section of online help for HPLogic
 //  Fast Binary Data File Format under the File Out tool (6.3)
 */
-BitBlockData* BitBlockData::read(std::ifstream& inFile) {
+std::shared_ptr<BitBlockData> BitBlockData::read(std::ifstream& inFile) {
 
 	std::string line;
 	long id;
@@ -38,13 +37,13 @@ BitBlockData* BitBlockData::read(std::ifstream& inFile) {
 
 	//TODO: for debug std::cout << "+++      Integral ID: " << id << std::endl;
 
-	BitBlockData* bitBlockData = nullptr;
-	if ((bitBlockData = static_cast<BitBlockData*>(DataGroup::instance()->isObject(id)))) {
+	std::shared_ptr<BitBlockData> bitBlockData;
+	if (auto bitBlockDataPtr = static_cast<BitBlockData*>(DataGroup::instance()->isObject(id).get())) {
 		//TODO: for debug std::cout << "+++    already seen this LabelEntry object" << std::endl;
-		return bitBlockData;
+		return std::shared_ptr<BitBlockData>(bitBlockDataPtr);
 	}
 
-	bitBlockData = new BitBlockData(id);
+	bitBlockData = std::make_shared<BitBlockData>(id);
 
 	/* extractor information for this label */
 	bitBlockData->extractor = Extractor::read(inFile);

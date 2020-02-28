@@ -20,7 +20,7 @@ public:
 	: SharedObject(0) {}
 	virtual ~AxisX() {}
 
-	static AxisX* read(std::ifstream& inFile);
+	static std::shared_ptr<AxisX> read(std::ifstream& inFile);
 	virtual int64_t getTime(int aRecIdx)
 	{return 0;}
 
@@ -30,8 +30,8 @@ public:
 	{return 0;}
 
 private:
-	static AxisX* readAbscissaData();
-	static AxisX* readPeriodic2();
+	static std::shared_ptr<AxisX> readAbscissaData();
+	static std::shared_ptr<AxisX> readPeriodic2();
 };
 
 #endif /* AXISX_H_ */

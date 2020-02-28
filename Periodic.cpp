@@ -26,12 +26,12 @@ Periodic::~Periodic() {
 //  See 'Vertical Header->Abscissa Data Type->Perodic' section of online
 //  help for HPLogic Fast Binary Data File Format under the File Out tool (8.2)
 */
-Periodic* Periodic::read(std::ifstream& inFile) {
+std::shared_ptr<Periodic> Periodic::read(std::ifstream& inFile) {
 	std::string line;
 
 	//TODO: for debug std::cout << "+++  Periodic Data" << std::endl;
 
-	auto periodic = new Periodic();
+	auto periodic = std::make_shared<Periodic>();
 
 	/* number of samples and trigger position */
 	std::getline(inFile, line);

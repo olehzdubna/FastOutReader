@@ -29,7 +29,7 @@ BitBlock::~BitBlock() {
 //  of the online help for Fast Binary Data File Format under the File Out
 //  tool (6.4 or 6.5)
 */
-BitBlock* BitBlock::read(std::ifstream& inFile) {
+std::shared_ptr<BitBlock> BitBlock::read(std::ifstream& inFile) {
 
 	std::string line;
 	int paged = 0;
@@ -66,10 +66,10 @@ BitBlock* BitBlock::read(std::ifstream& inFile) {
 	  return nullptr;
 	}
 
-	BitBlock* bitBlock = nullptr;
-	if ((bitBlock = static_cast<BitBlock*>(DataGroup::instance()->isObject(id))) ) {
-		//TODO: for debug  std::cout << "    already seen this LabelEntry object" << std::endl;
-		return bitBlock;
+	std::shared_ptr<BitBlock> bitBlock;
+	if (auto bitBlockPtr = static_cast<BitBlock*>(DataGroup::instance()->isObject(id).get())) {
+		//TODO: for debug std::cout << " +++ already seen this LabelEntry object" << std::endl;
+		return std::shared_ptr<BitBlock>(bitBlockPtr);
 	}
 	std::cout << std::endl;
 
@@ -109,7 +109,7 @@ BitBlock* BitBlock::read(std::ifstream& inFile) {
 		std::getline(dataFile, line);
 	}
 
-	bitBlock = new BitBlock(id);
+	bitBlock = std::make_shared<BitBlock>(id);
 
 	std::getline(dataFile, line);
 	::sscanf(line.data(), "%d %d\n", &bitBlock->numSamples, &bitBlock->numBytesPerSample ) ;

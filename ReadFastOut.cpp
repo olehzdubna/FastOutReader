@@ -74,7 +74,7 @@ int main(int argc, char** argv) {
 		return -2;
 	}
 
-	auto dataGroup = new DataGroup(*inFile.get());
+	auto dataGroup = std::make_unique<DataGroup>(*inFile.get());
 	dataGroup->process();
 
 	std::cout << "*** DONE Reading ***" << std::endl;
@@ -85,7 +85,7 @@ int main(int argc, char** argv) {
 		std::string name;
 		int width;
 		fstHandle handle;
-		Label* lbl;
+		std::shared_ptr<Label> lbl;
 	} LabelVar;
 
 	std::vector<LabelVar> vars;
@@ -204,22 +204,18 @@ int main(int argc, char** argv) {
 
 	::fstWriterClose(ctx);
 
-	delete dataGroup;
-
 	std::string commandStr = (!gtkwavePath.empty() ? gtkwavePath : "gtkwave");
+        commandStr += " " + outFileName;  
 	if(std::system(commandStr.c_str()) != 0)
 	{
             std::cerr << "***WARNING*** Could not resolve gtkwave path = " << commandStr 
 	              << ", defaulting to binary built from repository" << std::endl; 
-            commandStr = "./gtkwave3";
-	}
-        commandStr += " " + outFileName;  
-        if(std::system(commandStr.c_str()) != 0)
-	{
-            std::cerr << "***ERROR*** Failed to start " << commandStr << std::endl;
-	    return -4;
+            commandStr = "./gtkwave3 " + outFileName;
+            if(std::system(commandStr.c_str()) != 0)
+	    {
+                std::cerr << "***ERROR*** Failed to start " << commandStr << std::endl;
+	        return -4;
+	    }
 	}
 	return 0;
 }
-
-

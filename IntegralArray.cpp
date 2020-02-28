@@ -23,7 +23,7 @@ IntegralArray::~IntegralArray() {
 //  Fast Binary Data File Format under the File Out tool (6.1)
 //
 */
-IntegralArray* IntegralArray::read(std::ifstream& inFile,int numbits, bool sign, int ipl) {
+std::shared_ptr<IntegralArray> IntegralArray::read(std::ifstream& inFile,int numbits, bool sign, int ipl) {
 
 	std::string line;
 	long id ;
@@ -45,13 +45,13 @@ IntegralArray* IntegralArray::read(std::ifstream& inFile,int numbits, bool sign,
 
 	//TODO: for debug std::cout << "+++      Integral ID: " << id << std::endl;
 
-	IntegralArray* integralArray = nullptr;
-	if ((integralArray = static_cast<IntegralArray*>(DataGroup::instance()->isObject(id))) ) {
+	std::shared_ptr<IntegralArray> integralArray;
+	if (auto integralArrayPtr = static_cast<IntegralArray*>(DataGroup::instance()->isObject(id).get()))  {
 		//TODO: for debug std::cout << "+++    already seen this LabelEntry object" << std::endl;
-		return integralArray;
+		return std::shared_ptr<IntegralArray>(integralArrayPtr);
 	}
 
-	integralArray = new IntegralArray(id);
+	integralArray = std::make_shared<IntegralArray>(id);
 
 	std::getline(inFile, line);
 	  /* length */

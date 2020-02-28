@@ -19,7 +19,7 @@ public:
 	DataSet(std::ifstream& anInFile);
 	virtual ~DataSet();
 	bool process();
-	const std::vector<Label*>& getLabels() const
+	const std::vector<std::shared_ptr<Label>>& getLabels() const
 	{return labels;}
 	int64_t getTime(int aIdx);
 	int getStartSample()
@@ -43,8 +43,8 @@ private:
 	int endTime;
     int startSample;
     int lastSample;
-    std::vector<Label*> labels;
-    AxisX* timeLine;
+    std::vector<std::shared_ptr<Label>> labels;
+    std::shared_ptr<AxisX> timeLine;
 };
 
 #endif /* DATASET_H_ */

@@ -10,7 +10,7 @@
 #include <TimeTags.h>
 #include <Periodic.h>
 
-AxisX* AxisX::read(std::ifstream& inFile)
+std::shared_ptr<AxisX> AxisX::read(std::ifstream& inFile)
 {
 /*
 //  Read X axis information from a file
@@ -35,13 +35,13 @@ AxisX* AxisX::read(std::ifstream& inFile)
     }
 
     std::cerr << "Unknown Abscissa Data Type " << line << std::endl;
-    return nullptr;
+    return std::shared_ptr<AxisX>();
 }
 
-AxisX* AxisX::readAbscissaData() {
-	return nullptr;
+std::shared_ptr<AxisX> AxisX::readAbscissaData() {
+	return std::shared_ptr<AxisX>();
 }
 
-AxisX* AxisX::readPeriodic2() {
-	return nullptr;
+std::shared_ptr<AxisX> AxisX::readPeriodic2() {
+	return std::shared_ptr<AxisX>();
 }

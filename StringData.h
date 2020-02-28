@@ -15,7 +15,7 @@ class StringData: public IntegralData {
 public:
 	StringData(long id);
 	~StringData();
-	static StringData* read(std::ifstream& inFile);
+	static std::shared_ptr<StringData> read(std::ifstream& inFile);
 private:
 	void readStringBlock(std::ifstream& inFile, int length);
 private:

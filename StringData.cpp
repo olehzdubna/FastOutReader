@@ -22,7 +22,7 @@ StringData::~StringData() {
 //  See 'IntegralData->Strings' section of online help for HPLogic Fast
 //  Binary Data File Format under the File Out tool (6.7)
 */
-StringData* StringData::read(std::ifstream& inFile) {
+std::shared_ptr<StringData> StringData::read(std::ifstream& inFile) {
 	std::string line;
     long id ;
     int length ;
@@ -35,13 +35,13 @@ StringData* StringData::read(std::ifstream& inFile) {
 
     //TODO: for debug std::cout << "+++      Integral ID: " << id << std::endl;
 
-    StringData* stringData = nullptr;
-    if ((stringData = static_cast<StringData*>(DataGroup::instance()->isObject(id))) ) {
+    std::shared_ptr<StringData> stringData;
+    if (auto stringDataPtr = static_cast<StringData*>(DataGroup::instance()->isObject(id).get()))  {
         //TODO: for debug std::cout << "+++    already seen this LabelEntry object" << std::endl;
         return stringData;
     }
 
-	stringData = new StringData(id);
+	stringData = std::make_shared<StringData>(id);
 
 	std::getline(inFile, line);
     length = ::atoi(line.data());

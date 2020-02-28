@@ -13,6 +13,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <memory>
 #include <boost/tokenizer.hpp>
 
 #include <SharedObject.h>
@@ -26,11 +27,11 @@ public:
 	static DataGroup*  instance()
 	{return spInst;}
 	bool process();
-	const std::vector<DataSet*>& getDataSets()
+	const std::vector<std::shared_ptr<DataSet>>& getDataSets()
 	{return dataSets;}
 
-	SharedObject* isObject(long id);
-	bool addObject(SharedObject* anObj);
+	std::shared_ptr<SharedObject> isObject(long id);
+	bool addObject(std::shared_ptr<SharedObject> anObj);
 
 private:
 	static DataGroup* spInst;
@@ -40,8 +41,8 @@ private:
 	int timeCrossCorrID;
 	int stateCrossCorrID;
 	int numDataSets;
-	std::map<long, SharedObject*> sharedObjMap;
-	std::vector<DataSet*> dataSets;
+	std::map<long, std::shared_ptr<SharedObject>> sharedObjMap;
+	std::vector<std::shared_ptr<DataSet>> dataSets;
 };
 
 #endif /* DATAGROUP_H_ */

@@ -11,6 +11,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <memory>
 
 class IntegralData;
 class Label {
@@ -35,7 +36,7 @@ private:
 	std::ifstream& inFile;
     long id ;
     std::string name;
-    IntegralData* integralData;
+    std::shared_ptr<IntegralData> integralData;
     std::vector<bool> storedBitVec;
     bool initVal;
 };

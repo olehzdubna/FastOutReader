@@ -15,7 +15,7 @@ public:
 	PagedIntegralData(long anId);
 	~PagedIntegralData();
 
-	static PagedIntegralData* read(std::ifstream& inFile, int numbits, int sign);
+	static std::shared_ptr<PagedIntegralData> read(std::ifstream& inFile, int numbits, int sign);
 	void extractBytes(int aRecIdx, std::vector<uint8_t>& aByteVec);
 
 private:

@@ -89,7 +89,7 @@ bool DataGroup::process() {
 
     for (int i = 0 ; i < numDataSets ; i++ ) {
         //TODO: for debug std::cout << "+++ DataSet #" << i+1 << std::endl;
-        auto dataSet = new DataSet(inFile);
+        auto dataSet = std::make_shared<DataSet>(inFile);
         dataSet->process();
         dataSets.push_back(dataSet);
     }
@@ -97,7 +97,7 @@ bool DataGroup::process() {
 	return true;
 }
 
-SharedObject* DataGroup::isObject(long id) {
+std::shared_ptr<SharedObject> DataGroup::isObject(long id) {
 	auto itr = sharedObjMap.find(id);
 	if(itr != sharedObjMap.end())
 	{
@@ -108,10 +108,10 @@ SharedObject* DataGroup::isObject(long id) {
 
 	//TODO: for debug printf("+++ DataGroup::isObject id: %ld. obj: nil \n", id);
 
-	return nullptr;
+	return std::shared_ptr<SharedObject>();
 }
 
-bool DataGroup::addObject(SharedObject* anObj) {
+bool DataGroup::addObject(std::shared_ptr<SharedObject> anObj) {
 	auto itr = sharedObjMap.find(anObj->getId());
 	if(itr == sharedObjMap.end())
 	{

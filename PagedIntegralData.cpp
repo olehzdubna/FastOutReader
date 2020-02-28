@@ -22,7 +22,7 @@ PagedIntegralData::PagedIntegralData(long anId)
 PagedIntegralData::~PagedIntegralData() {
 }
 
-PagedIntegralData* PagedIntegralData::read(std::ifstream& inFile, int numbits, int sign) {
+std::shared_ptr<PagedIntegralData> PagedIntegralData::read(std::ifstream& inFile, int numbits, int sign) {
 	/*
 	//  Read Paged Integral Data from a file
 	//  See 'IntegralData->PagedIntegralData' section of online help for HPLogic
@@ -48,14 +48,14 @@ PagedIntegralData* PagedIntegralData::read(std::ifstream& inFile, int numbits, i
 	    	return nullptr;
 	    }
 
-	    PagedIntegralData* pagedIntegralData = nullptr;
+	    std::shared_ptr<PagedIntegralData> pagedIntegralData;
 
-	    if ((pagedIntegralData = static_cast<PagedIntegralData*>(DataGroup::instance()->isObject(id)))) {
+	    if (auto pagedIntegralDataPtr = static_cast<PagedIntegralData*>(DataGroup::instance()->isObject(id).get())) {
 	        //TODO: for debug std::cout << "+++    already seen this LabelEntry object" << std::endl;
-	        return pagedIntegralData;
+	        return std::shared_ptr<PagedIntegralData>(pagedIntegralDataPtr);
 	    }
 
-	    pagedIntegralData = new PagedIntegralData(id);
+	    pagedIntegralData = std::make_shared<PagedIntegralData>(id);
 
 	    /* is this data in this file or in separate file? */
 		std::getline(inFile, line);
@@ -77,8 +77,7 @@ PagedIntegralData* PagedIntegralData::read(std::ifstream& inFile, int numbits, i
 	        	      dataFile.open(basename+1);
 	        	      if(!dataFile.is_open()) {
 	        		  std::cerr << "   Can't open file " << filename << std::endl;
-	        		  delete pagedIntegralData;
-	              	          return nullptr;
+	              	          return std::shared_ptr<PagedIntegralData>();
 	        	      }
 			  }
 	          }

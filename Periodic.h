@@ -19,7 +19,7 @@ public:
 	Periodic();
 	~Periodic();
 
-	static Periodic* read(std::ifstream& inFile);
+	static std::shared_ptr<Periodic> read(std::ifstream& inFile);
 	void extractBytes(int aRecIdx, std::vector<uint8_t>& aByteVec){}
 
 	int getSamples()
