@@ -32,7 +32,9 @@ public:
 
 	std::shared_ptr<SharedObject> isObject(long id);
 	bool addObject(std::shared_ptr<SharedObject> anObj);
-
+private:
+       DataGroup(const DataGroup&)=delete;
+       DataGroup& operator=(const DataGroup&)=delete;
 private:
 	static DataGroup* spInst;
 	std::ifstream& inFile;
