@@ -14,14 +14,14 @@ class BitPackedData: public IntegralData {
 public:
 	BitPackedData(long anId);
 	~BitPackedData();
-	static BitPackedData* read(std::ifstream& inFile);
+	static std::shared_ptr<BitPackedData> read(std::ifstream& inFile);
 private:
 	int start;
 	int width;
 	int inverted;
 	int bytesPerLine;
 	int integralTypesPerLine;
-	IntegralData* integralData2;
+	std::shared_ptr<IntegralData> integralData2;
 };
 
 #endif /* BITPACKEDDATA_H_ */

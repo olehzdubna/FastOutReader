@@ -20,7 +20,7 @@ public:
 	virtual ~IntegralData()
 	{}
 
-	static IntegralData* read(std::ifstream& inFile, int inegralDataperline);
+	static std::shared_ptr<IntegralData> read(std::ifstream& inFile, int inegralDataperline);
 
 	virtual void extractBits(int aRecIdx, std::vector<bool>& aBitVec) {}
 	virtual void extractBytes(int aRecIdx, std::vector<uint8_t>& aByteVec) {}

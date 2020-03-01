@@ -14,8 +14,7 @@
 TimeTags::TimeTags()
  : AxisX()
  , samples(0)
- , trig(0)
- , integralData(nullptr) {
+ , trig(0) {
 }
 
 TimeTags::~TimeTags() {
@@ -26,14 +25,14 @@ TimeTags::~TimeTags() {
 //  See 'Vertical Header->Abscissa Data Type->Time Tags' section of online
 //  help for HPLogic Fast Binary Data File Format under the File Out tool (8.3)
 */
-TimeTags* TimeTags::read(std::ifstream& inFile, int pagedFlag) {
+std::shared_ptr<TimeTags> TimeTags::read(std::ifstream& inFile, int pagedFlag) {
 
 	std::string line;
 	int haveData = 1 ;
 
 	//TODO: for debug std::cout << "+++  Time Tagged Data    " << pagedFlag << std::endl;
 
-	auto timeTags = new TimeTags();
+	auto timeTags = std::make_shared<TimeTags>();
 
 	std::getline(inFile, line);
 	/* number of samples and trigger position */

@@ -20,18 +20,20 @@ public:
 	: SharedObject(0) {}
 	virtual ~AxisX() {}
 
-	static AxisX* read(std::ifstream& inFile);
+	static std::shared_ptr<AxisX> read(std::ifstream& inFile);
 	virtual int64_t getTime(int aRecIdx)
 	{return 0;}
 
 	virtual int getTrig()
-	{return 0;}
+	{return samples;}
 	virtual int getSamples()
-	{return 0;}
+	{return trig;}
 
 private:
-	static AxisX* readAbscissaData();
-	static AxisX* readPeriodic2();
+	static std::shared_ptr<AxisX> readAbscissaData(std::ifstream& inFile);
+private:
+         int samples{0};
+	 int trig{0};
 };
 
 #endif /* AXISX_H_ */

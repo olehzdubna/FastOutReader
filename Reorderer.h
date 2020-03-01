@@ -13,7 +13,7 @@ public:
 	Reorderer();
 	~Reorderer();
 
-	static Reorderer* read(std::ifstream& inFile);
+	static std::shared_ptr<Reorderer> read(std::ifstream& inFile);
 
 private:
 	int endian16;

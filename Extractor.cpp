@@ -25,13 +25,13 @@ Extractor::~Extractor() {
 //  See 'IntegralData->Label Extractor' section fo the online help
 //  for Fast Binary Data File Format under the File Out tool (6.8)
 */
-Extractor* Extractor::read(std::ifstream& inFile) {
+std::shared_ptr<Extractor> Extractor::read(std::ifstream& inFile) {
 	std::string line;
 
 	int haveReorderObject;
 	int mask;
 
-	Extractor* extractor = new Extractor();
+	auto extractor = std::make_shared<Extractor>();
 	/* get the width in bit and bytes of the mask and whether it needs to
 	   be inverted or not */
 	std::getline(inFile, line);
@@ -121,8 +121,4 @@ void Extractor::extractByteBits(uint8_t aByte, uint8_t aMask, std::vector<bool>&
 		aMask = (aMask >> 1);
 		aByte = (aByte >> 1);
 	}
-}
-
-void Extractor::deleteReorder() {
-	delete reorder;
 }

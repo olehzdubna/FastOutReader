@@ -19,14 +19,25 @@ public:
 	Periodic();
 	~Periodic();
 
-	static Periodic* read(std::ifstream& inFile);
+	static std::shared_ptr<Periodic> read(std::ifstream& inFile);
 	void extractBytes(int aRecIdx, std::vector<uint8_t>& aByteVec){}
 
 	int getSamples()
 	{return samples;}
 	int getTrig()
 	{return trig;}
+        int getFirstTime()
+	{return firstTime;}
+        int getIncrementTime()
+	{return incrementTime;}
 
+        void update(int asamples, int atrig, int origin, int increment)
+	{
+            samples = asamples;
+	    trig = atrig;
+	    firstTime = origin;
+            incrementTime = increment;
+	}
 private:
 	int samples;
 	int trig;

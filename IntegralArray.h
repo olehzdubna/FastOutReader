@@ -15,7 +15,7 @@ public:
 	IntegralArray(long anId);
 	~IntegralArray();
 
-	static IntegralArray* read(std::ifstream& inFile, int numbits, bool sign, int ipl);
+	static std::shared_ptr<IntegralArray> read(std::ifstream& inFile, int numbits, bool sign, int ipl);
 };
 
 #endif /* INTEGRALARRAY_H_ */

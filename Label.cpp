@@ -16,7 +16,6 @@
 Label::Label(std::ifstream& anInFile)
  : inFile(anInFile)
  , id(0)
- , integralData(0)
  , initVal(true) {
 }
 
@@ -25,7 +24,7 @@ Label::~Label() {
 
 bool Label::process() {
 	std::string line;
-	SharedObject* sharedObject = nullptr;
+	std::shared_ptr<SharedObject> sharedObject;
 
 	std::getline(inFile, line);
 	id = ::atol(line.data());

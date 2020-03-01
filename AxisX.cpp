@@ -9,8 +9,10 @@
 #include <AxisX.h>
 #include <TimeTags.h>
 #include <Periodic.h>
+#include <Periodic2.h>
+#include <Utils.h>
 
-AxisX* AxisX::read(std::ifstream& inFile)
+std::shared_ptr<AxisX> AxisX::read(std::ifstream& inFile)
 {
 /*
 //  Read X axis information from a file
@@ -23,11 +25,11 @@ AxisX* AxisX::read(std::ifstream& inFile)
 	//TODO: for debug std::cout << "+++ DataSet::readXaxis " << line << std::endl;
 
     if (line == "AbscissaData") {
-        return readAbscissaData();
+        return readAbscissaData(inFile);
     } else if  (line == "Periodic") {
         return Periodic::read(inFile);
     } else if  (line == "Periodic2") {
-        return readPeriodic2();
+        return Periodic2::read(inFile);
     } else if  (line == "TimeTags") {
         return TimeTags::read(inFile, 0);
     } else if  (line == "PagedTimeTags") {
@@ -35,13 +37,17 @@ AxisX* AxisX::read(std::ifstream& inFile)
     }
 
     std::cerr << "Unknown Abscissa Data Type " << line << std::endl;
-    return nullptr;
+    return std::shared_ptr<AxisX>();
 }
 
-AxisX* AxisX::readAbscissaData() {
-	return nullptr;
-}
+std::shared_ptr<AxisX> AxisX::readAbscissaData(std::ifstream& inFile) {
+     // Read number of samples and trigger time for all of the labels 
+     auto abscissa = std::make_shared<AxisX>();
+     
+     std::string line; 
+     std::getline(inFile, line);
+     ::scanf(line.data(), "%d %d\n", &abscissa->samples, &abscissa->trig);
 
-AxisX* AxisX::readPeriodic2() {
-	return nullptr;
+     Utils::readAttributes(inFile, "AbscissaData");     
+     return abscissa;
 }

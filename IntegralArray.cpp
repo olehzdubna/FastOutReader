@@ -23,13 +23,12 @@ IntegralArray::~IntegralArray() {
 //  Fast Binary Data File Format under the File Out tool (6.1)
 //
 */
-IntegralArray* IntegralArray::read(std::ifstream& inFile,int numbits, bool sign, int ipl) {
+std::shared_ptr<IntegralArray> IntegralArray::read(std::ifstream& inFile,int numbits, bool sign, int ipl) {
 
 	std::string line;
 	long id ;
 	int len ;
 
-	char *buffer ;
 	int count, maxsize;
 	int column = 0;
 	int size = numbits / 8 ;
@@ -45,13 +44,13 @@ IntegralArray* IntegralArray::read(std::ifstream& inFile,int numbits, bool sign,
 
 	//TODO: for debug std::cout << "+++      Integral ID: " << id << std::endl;
 
-	IntegralArray* integralArray = nullptr;
-	if ((integralArray = static_cast<IntegralArray*>(DataGroup::instance()->isObject(id))) ) {
+	std::shared_ptr<IntegralArray> integralArray;
+	if (auto integralArrayPtr = static_cast<IntegralArray*>(DataGroup::instance()->isObject(id).get()))  {
 		//TODO: for debug std::cout << "+++    already seen this LabelEntry object" << std::endl;
-		return integralArray;
+		return std::shared_ptr<IntegralArray>(integralArrayPtr);
 	}
 
-	integralArray = new IntegralArray(id);
+	integralArray = std::make_shared<IntegralArray>(id);
 
 	std::getline(inFile, line);
 	  /* length */
@@ -64,9 +63,10 @@ IntegralArray* IntegralArray::read(std::ifstream& inFile,int numbits, bool sign,
 	/* sscanf( tmpstr, "%s %s\n", x, y ) ; */
 
 	/* raw bytes */
-	buffer = new char[size * len];
+	auto buffer = std::shared_ptr<char>(new char[size * len],
+	                                      std::default_delete<char[]>());
 
-	inFile.read(buffer, size * len) ;
+	inFile.read(buffer.get(), size * len) ;
 
 	len = len / ipl ;    /* adjust len/size to account for integralsPerLine */
 	size = size * ipl ;  /* used by BitPackedData objects...                */

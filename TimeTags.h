@@ -18,7 +18,7 @@ public:
 	TimeTags();
 	~TimeTags();
 
-	static TimeTags* read(std::ifstream& inFile, int pagedFlag);
+	static std::shared_ptr<TimeTags> read(std::ifstream& inFile, int pagedFlag);
 	int64_t getTime(int aRecIdx);
 
 	int getSamples()
@@ -29,7 +29,7 @@ public:
 private:
 	int samples;
 	int trig;
-	IntegralData* integralData;
+	std::shared_ptr<IntegralData> integralData;
 };
 
 #endif /* TIMETAGS_H_ */

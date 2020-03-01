@@ -21,7 +21,8 @@ Reorderer::~Reorderer() {
 //  See 'IntegralData->Label Extractor' section of online help for HPLogic
 //  Fast Binary Data File Format under the File Out tool (6.8.4)
 */
-Reorderer* Reorderer::read(std::ifstream& inFile) {
+
+std::shared_ptr<Reorderer> Reorderer::read(std::ifstream& inFile) {
 	std::string line;
     int endian16, endian32, endian64, endian128, width ;
     char buffer[256] ;
@@ -30,7 +31,7 @@ Reorderer* Reorderer::read(std::ifstream& inFile) {
     /* longest output2inputMapL = malloc( width * sizeof( longest )) ; */
     /* longest is a type that deals with numbers greater than 32 bits  */
 
-    Reorderer* reorderer = new Reorderer();
+    auto reorderer = std::make_shared<Reorderer>();
 
 	std::getline(inFile, line);
     ::sscanf(line.data(), "Endian16: %d Endian32: %d Endian64: %d Endian128: %d Width: %d\n",

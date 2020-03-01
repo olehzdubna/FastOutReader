@@ -28,12 +28,10 @@ DataSet::DataSet(std::ifstream& anInFile)
  , endTime(0)
  , startSample(0)
  , lastSample(0)
- , timeLine(nullptr)
 {
 }
 
 DataSet::~DataSet() {
-	delete timeLine;
 }
 
 bool DataSet::process() {
@@ -98,7 +96,7 @@ bool DataSet::process() {
 
 bool DataSet::readLabel() {
 
-	auto label = new Label(inFile);
+	auto label = std::make_shared<Label>(inFile);
 	label->process();
 
 	labels.push_back(label);

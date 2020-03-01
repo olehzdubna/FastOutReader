@@ -17,12 +17,12 @@ public:
 	BitBlockData(long anId);
 	virtual ~BitBlockData();
 
-	static BitBlockData* read(std::ifstream& inFile);
+	static std::shared_ptr<BitBlockData> read(std::ifstream& inFile);
 	void extractBits(int aRecIdx, std::vector<bool>& aBitVec);
 
 private:
-	Extractor* extractor;
-	BitBlock* bitBlock;
+	std::shared_ptr<Extractor> extractor;
+	std::shared_ptr<BitBlock> bitBlock;
 };
 
 #endif /* BITBLOCKDATA_H_ */

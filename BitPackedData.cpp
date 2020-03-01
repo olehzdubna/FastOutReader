@@ -12,8 +12,7 @@
 #include <BitPackedData.h>
 
 BitPackedData::BitPackedData(long anId)
- : IntegralData(anId)
- , integralData2(nullptr) {
+ : IntegralData(anId) {
 }
 
 BitPackedData::~BitPackedData() {
@@ -24,7 +23,7 @@ BitPackedData::~BitPackedData() {
 //  See 'IntegralData->BitPackedData' section of online help for HPLogic
 //  Fast Binary Data File Format under the File Out tool (6.2)
 */
-BitPackedData* BitPackedData::read(std::ifstream& inFile) {
+std::shared_ptr<BitPackedData> BitPackedData::read(std::ifstream& inFile) {
 	std::string line;
 
 	long id = 0;
@@ -43,13 +42,13 @@ BitPackedData* BitPackedData::read(std::ifstream& inFile) {
 
 	//TODO: for debug std::cout << "+++      Integral ID: " << id << std::endl;
 
-	BitPackedData* bitPackedData = nullptr;
-	if ((bitPackedData = static_cast<BitPackedData*>(DataGroup::instance()->isObject(id)))) {
+	std::shared_ptr<BitPackedData> bitPackedData;
+	if (auto bitPackedDataPtr = static_cast<BitPackedData*>(DataGroup::instance()->isObject(id).get())) {
 		//TODO: for debug std::cout << "+++    already seen this LabelEntry object" << std::endl;
-		return bitPackedData;
+		return std::shared_ptr<BitPackedData>(bitPackedDataPtr);
 	}
 
-	bitPackedData = new BitPackedData(id);
+	bitPackedData = std::make_shared<BitPackedData>(id);
 	std::getline(inFile, line);
 	::sscanf(line.data(), "%d %d %d\n", &bitPackedData->start, &bitPackedData->width, &bitPackedData->inverted ) ;
 

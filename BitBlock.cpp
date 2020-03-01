@@ -14,13 +14,8 @@
 
 BitBlock::BitBlock(long anId)
  : IntegralData (anId)
- , buffer(nullptr)
  , numSamples(0)
  , numBytesPerSample() {
-}
-
-BitBlock::~BitBlock() {
-	delete [] buffer;
 }
 
 /*
@@ -29,7 +24,7 @@ BitBlock::~BitBlock() {
 //  of the online help for Fast Binary Data File Format under the File Out
 //  tool (6.4 or 6.5)
 */
-BitBlock* BitBlock::read(std::ifstream& inFile) {
+std::shared_ptr<BitBlock> BitBlock::read(std::ifstream& inFile) {
 
 	std::string line;
 	int paged = 0;
@@ -66,10 +61,10 @@ BitBlock* BitBlock::read(std::ifstream& inFile) {
 	  return nullptr;
 	}
 
-	BitBlock* bitBlock = nullptr;
-	if ((bitBlock = static_cast<BitBlock*>(DataGroup::instance()->isObject(id))) ) {
-		//TODO: for debug  std::cout << "    already seen this LabelEntry object" << std::endl;
-		return bitBlock;
+	std::shared_ptr<BitBlock> bitBlock;
+	if (auto bitBlockPtr = static_cast<BitBlock*>(DataGroup::instance()->isObject(id).get())) {
+		//TODO: for debug std::cout << " +++ already seen this LabelEntry object" << std::endl;
+		return std::shared_ptr<BitBlock>(bitBlockPtr);
 	}
 	std::cout << std::endl;
 
@@ -82,17 +77,17 @@ BitBlock* BitBlock::read(std::ifstream& inFile) {
 	const auto& inFileWithPrefix = static_cast<const IfstreamWithState&>(inFile);
 	if ( useFile ) {
 		//TODO: for debug std::cout << "+++      Data is in file " <<  filename << "." << std::endl;
-		dataFile.open(filename);
-		if(!dataFile.is_open()) {
+		dataFile.open(filename, std::ios::binary);
+		if(!dataFile.is_open() || dataFile.fail()) {
 		  char *basename = strrchr( filename, '/' ) ;
 		  if (basename) {
 		          std::string basenameWithPrefix(inFileWithPrefix.getDirectoryPrefix() + "/" + 
 			                                 std::string(basename+1));
-			  dataFile.open(basenameWithPrefix.c_str());
-			  if(!dataFile.is_open()) {
+			  dataFile.open(basenameWithPrefix.c_str(), std::ios::binary);
+			  if(!dataFile.is_open() || dataFile.fail()) {
 		             /* full name did not work, try just base name */
-			     dataFile.open(basename + 1);
-			     if(!dataFile.is_open()) {
+			     dataFile.open(basename + 1, std::ios::binary);
+			     if(!dataFile.is_open() || dataFile.fail()) {
 				  std::cerr << "   Can't open file " << (basename + 1) << std::endl;
 				  return nullptr;
 		              }
@@ -109,7 +104,7 @@ BitBlock* BitBlock::read(std::ifstream& inFile) {
 		std::getline(dataFile, line);
 	}
 
-	bitBlock = new BitBlock(id);
+	bitBlock = std::make_shared<BitBlock>(id);
 
 	std::getline(dataFile, line);
 	::sscanf(line.data(), "%d %d\n", &bitBlock->numSamples, &bitBlock->numBytesPerSample ) ;
@@ -117,9 +112,10 @@ BitBlock* BitBlock::read(std::ifstream& inFile) {
 	//TODO: for debug std::cout << "+++        Number samples: " << bitBlock->numSamples << "  Bytes Per Sample: " << bitBlock->numBytesPerSample << std::endl;
 
 	/* raw bytes */
-	bitBlock->buffer = new char[bitBlock->numSamples * bitBlock->numBytesPerSample];
+	bitBlock->buffer = std::shared_ptr<char>(new char[bitBlock->numSamples * bitBlock->numBytesPerSample],
+	                                         std::default_delete<char[]>());
 
-	dataFile.read(bitBlock->buffer, bitBlock->numBytesPerSample * bitBlock->numSamples);
+	dataFile.read(bitBlock->buffer.get(), bitBlock->numBytesPerSample * bitBlock->numSamples);
 
 	std::getline(inFile, line);
 
@@ -133,7 +129,7 @@ BitBlock* BitBlock::read(std::ifstream& inFile) {
 }
 
 const char* BitBlock::getRecord(int anIdx) const {
-	return &buffer[anIdx * numBytesPerSample];
+	return &buffer.get()[anIdx * numBytesPerSample];
 }
 
 
