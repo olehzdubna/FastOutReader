@@ -5,6 +5,7 @@
  *      Author: oleh
  */
 
+#include <cstring>
 #include <iostream>
 
 #include <BitBlock.h>
