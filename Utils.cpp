@@ -5,7 +5,7 @@
  *      Author: oleh
  */
 
-
+#include <cstring>
 #include <iostream>
 
 #include <Utils.h>
