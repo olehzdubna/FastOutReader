@@ -8,6 +8,8 @@
 #ifndef REORDERER_H_
 #define REORDERER_H_
 
+#include <memory>
+
 class Reorderer {
 public:
 	Reorderer();
