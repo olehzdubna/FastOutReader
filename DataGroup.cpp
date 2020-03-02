@@ -6,7 +6,9 @@
  */
 
 #include <iostream>
-#include <boost/token_functions.hpp>
+// boost::is_pointer is dependency for boost::tokenizer
+#include <boost/type_traits.hpp>
+#include <boost/tokenizer.hpp>
 
 #include <Utils.h>
 #include <DataGroup.h>
