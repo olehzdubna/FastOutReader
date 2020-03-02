@@ -5,7 +5,6 @@
  *      Author: oleh
  */
 
-#include <sys/endian.h>
 #include <iostream>
 
 #include <Utils.h>
