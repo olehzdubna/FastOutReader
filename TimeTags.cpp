@@ -5,7 +5,17 @@
  *      Author: oleh
  */
 
+
 #include <TimeTags.h>
+
+#ifdef Linux
+    #include <byteswap.h>
+#endif
+
+#ifdef FreeBSD
+    #include <sys/endian.h>
+#endif
+
 #include <string>
 #include <iostream>
 
@@ -64,7 +74,14 @@ int64_t TimeTags::getTime(int aRecIdx) {
 	integralData->extractBytes(aRecIdx, byteVec);
 
 	if(byteVec.size() == sizeof(tim))
-		tim = bswap64(*reinterpret_cast<int64_t*>(byteVec.data()));
+		tim = 
+#ifdef Linux 
+		        bswap_64
+#endif
+#ifdef FreeBSD
+                        bswap64
+#endif
+		          (*reinterpret_cast<int64_t*>(byteVec.data()));
 
 	return tim;
 }

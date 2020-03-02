@@ -8,6 +8,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ggdb -O3 -Wall")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb -O3 -Wall")
 
+if(${CMAKE_SYSTEM_NAME} EQUAL "Linux")
+    add_definitions(-DLinux)
+elseif(${CMAKE_SYSTEM_NAME} EQUAL "FreeBSD")
+    add_definitions(-DFreeBSD)
+endif()
+
 find_package(Boost 1.53.0 REQUIRED COMPONENTS program_options filesystem)
 
 ExternalProject_Add(rxterm
