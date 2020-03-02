@@ -12,6 +12,7 @@
 #include <fstream>
 #include <vector>
 
+#include <memory>
 #include <SharedObject.h>
 
 class AxisX : public SharedObject {
